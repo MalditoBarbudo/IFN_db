@@ -4,6 +4,8 @@
 library(tidyverse)
 library(dbplyr)
 library(RPostgreSQL)
+library(sp)
+library(rgdal)
 
 # db connections
 oracle_ifn <- DBI::dbConnect(
@@ -23,5 +25,78 @@ oracle_ifn <- DBI::dbConnect(
 # datum in all IFNs, to the more modern ETRS89 datum, so we need to transform
 # coordinates in sig tables for IFN2 and IFN3
 
-# parcelaifn2_sig
-tbl(oracle_ifn, 'parcelaifn2_sig')
+## parcelaifn2_sig
+# access ifn2_sig table
+# select utm coordinates variables
+# transform to coords object
+# sPtransform them to ETRS89
+# create the latlong variables in WGS84
+# update the database
+
+tbl(oracle_ifn, 'parcelaifn2_sig') %>%
+  select(utm_x, utm_y) %>%
+  collect() -> coords_utm_ED50_ifn2
+
+coordinates(coords_utm_ED50_ifn2) <- ~ utm_x+utm_y
+proj4string(coords_utm_ED50_ifn2) <- CRS('+init=epsg:23031')
+
+coords_utm_ETRS89_ifn2 <- spTransform(
+  coords_utm_ED50_ifn2,
+  CRS('+init=epsg:25831')
+)
+
+coords_latlong_WGS84_ifn2 <- spTransform(
+  coords_utm_ED50_ifn2,
+  CRS("+proj=longlat +datum=WGS84")
+)
+
+tbl(oracle_ifn, 'parcelaifn2_sig') %>%
+  collect() %>%
+  mutate(
+    utm_x = as.numeric(coords_utm_ETRS89_ifn2@coords[,1]),
+    utm_y = as.numeric(coords_utm_ETRS89_ifn2@coords[,2]),
+    longitude = as.numeric(coords_latlong_WGS84_ifn2@coords[,1]),
+    latitude = as.numeric(coords_latlong_WGS84_ifn2@coords[,2])
+  ) %>%
+  copy_to(
+    dest = oracle_ifn, df = ., name = 'parcelaifn2_sig_etrs89',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+## parcelaifn3_sig
+# access ifn3_sig table
+# select utm coordinates variables
+# transform to coords object
+# sPtransform them to ETRS89
+# create the latlong variables in WGS84
+# update the database
+
+tbl(oracle_ifn, 'parcelaifn3_sig') %>%
+  select(utm_x, utm_y) %>%
+  collect() -> coords_utm_ED50_ifn3
+
+coordinates(coords_utm_ED50_ifn3) <- ~ utm_x+utm_y
+proj4string(coords_utm_ED50_ifn3) <- CRS('+init=epsg:23031')
+
+coords_utm_ETRS89_ifn3 <- spTransform(
+  coords_utm_ED50_ifn3,
+  CRS('+init=epsg:25831')
+)
+
+coords_latlong_WGS84_ifn3 <- spTransform(
+  coords_utm_ED50_ifn3,
+  CRS("+proj=longlat +datum=WGS84")
+)
+
+tbl(oracle_ifn, 'parcelaifn3_sig') %>%
+  collect() %>%
+  mutate(
+    utm_x = as.numeric(coords_utm_ETRS89_ifn3@coords[,1]),
+    utm_y = as.numeric(coords_utm_ETRS89_ifn3@coords[,2]),
+    longitude = as.numeric(coords_latlong_WGS84_ifn3@coords[,1]),
+    latitude = as.numeric(coords_latlong_WGS84_ifn3@coords[,2])
+  ) %>%
+  copy_to(
+    dest = oracle_ifn, df = ., name = 'parcelaifn3_sig_etrs89',
+    overwrite = TRUE, temporary = FALSE
+  )
