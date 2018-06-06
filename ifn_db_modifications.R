@@ -4,11 +4,12 @@
 library(tidyverse)
 library(dbplyr)
 library(RPostgreSQL)
+library(pool)
 library(sp)
 library(rgdal)
 
 # db connections
-oracle_ifn <- DBI::dbConnect(
+oracle_ifn <- dbPool(
   RPostgreSQL::PostgreSQL(),
   user = 'ifn',
   password = rstudioapi::askForPassword('Password for ifn'),
@@ -100,3 +101,11 @@ tbl(oracle_ifn, 'parcelaifn3_sig') %>%
     dest = oracle_ifn, df = ., name = 'parcelaifn3_sig_etrs89',
     overwrite = TRUE, temporary = FALSE
   )
+
+# Nombres vegueries ####
+
+# Las veguerias en IFN2 e IFN3 tienen los nombres antiguos y solo 7 veguerias,
+# mientras que los mapas administrativos del cartografic tienen los nuevos con
+# 8 veguerias. Por tanto hay que modificar las tablas que contengan veguerias
+# con los nombres nuevos.
+
