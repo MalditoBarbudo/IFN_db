@@ -102,6 +102,19 @@ tbl(oracle_ifn, 'parcelaifn3_sig') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# name of general result table must be changed from r_ifnX to r_parcela_ifnX
+tbl(oracle_ifn, 'r_ifn2') %>% 
+  copy_to(
+    dest = oracle_ifn, df = ., name = 'r_parcela_ifn2',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+tbl(oracle_ifn, 'r_ifn3') %>% 
+  copy_to(
+    dest = oracle_ifn, df = ., name = 'r_parcela_ifn3',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # Nombres vegueries ####
 
 # Las veguerias en IFN2 e IFN3 tienen los nombres antiguos y solo 7 veguerias,
