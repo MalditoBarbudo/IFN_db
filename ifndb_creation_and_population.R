@@ -158,6 +158,13 @@ tbl(origin_db, 'r_ifn2') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn2_parcela_cd_res
+tbl(origin_db, 'r_cd_ifn2') %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_parcela_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn3_parcela_res
 tbl(origin_db, 'r_ifn3') %>%
   rename(
@@ -187,6 +194,13 @@ tbl(origin_db, 'r_ifn3') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn3_parcela_cd_res
+tbl(origin_db, 'r_cd_ifn3') %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_parcela_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn2_especie_res
 tbl(origin_db, 'r_especie_ifn2') %>%
   rename(
@@ -197,10 +211,27 @@ tbl(origin_db, 'r_especie_ifn2') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn2_especie_cd_res
+tbl(origin_db, 'r_especiecd_ifn2') %>%
+  rename(
+    idespecie = idespecieifn2
+  ) %>% 
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_especie_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn3_especie_res
 tbl(origin_db, 'r_especie_ifn3') %>% 
   copy_to(
     dest = final_db, df = ., name = 'ifn3_especie_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+# ifn3_especie_cd_res
+tbl(origin_db, 'r_especiecd_ifn3') %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_especie_cd_res',
     overwrite = TRUE, temporary = FALSE
   )
 
@@ -214,6 +245,16 @@ tbl(origin_db, 'r_espsimple_ifn2') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn2_especiesimp_cd_res
+tbl(origin_db, 'r_espsimplecd_ifn2') %>%
+  rename(
+    idespeciesimp = idespeciesimple
+  ) %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_especiesimp_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn3_especiesimp_res
 tbl(origin_db, 'r_espsimple_ifn3') %>%
   rename(
@@ -224,10 +265,27 @@ tbl(origin_db, 'r_espsimple_ifn3') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn3_especiesimp_cd_res
+tbl(origin_db, 'r_espsimplecd_ifn3') %>%
+  rename(
+    idespeciesimp = idespeciesimple
+  ) %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_especiesimp_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn2_genere_res
 tbl(origin_db, 'r_genere_ifn2') %>% 
   copy_to(
     dest = final_db, df = ., name = 'ifn2_genere_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+# ifn2_genere_cd_res
+tbl(origin_db, 'r_generecd_ifn2') %>% 
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_genere_cd_res',
     overwrite = TRUE, temporary = FALSE
   )
 
@@ -238,6 +296,13 @@ tbl(origin_db, 'r_genere_ifn3') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn3_genere_cd_res
+tbl(origin_db, 'r_generecd_ifn3') %>% 
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_genere_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn2_planifconif_res
 tbl(origin_db, 'r_plancon_ifn2') %>% 
   copy_to(
@@ -245,10 +310,24 @@ tbl(origin_db, 'r_plancon_ifn2') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn2_planifconif_cd_res
+tbl(origin_db, 'r_planconcd_ifn2') %>% 
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_planifconif_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn3_planifconif_res
 tbl(origin_db, 'r_plancon_ifn3') %>% 
   copy_to(
     dest = final_db, df = ., name = 'ifn3_planifconif_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+# ifn3_planifconif_cd_res
+tbl(origin_db, 'r_planconcd_ifn3') %>% 
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_planifconif_cd_res',
     overwrite = TRUE, temporary = FALSE
   )
 
@@ -262,6 +341,16 @@ tbl(origin_db, 'r_cadesclcon_ifn2') %>%
     overwrite = TRUE, temporary = FALSE
   )
 
+# ifn2_cadesccon_cd_res
+tbl(origin_db, 'r_cadesclconcd_ifn2') %>%
+  rename(
+    idcadesccon = idcaducesclerconif
+  ) %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn2_cadesccon_cd_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
 # ifn3_cadesccon_res
 tbl(origin_db, 'r_cadesclcon_ifn3') %>%
   rename(
@@ -269,6 +358,16 @@ tbl(origin_db, 'r_cadesclcon_ifn3') %>%
   ) %>%
   copy_to(
     dest = final_db, df = ., name = 'ifn3_cadesccon_res',
+    overwrite = TRUE, temporary = FALSE
+  )
+
+# ifn3_cadesccon_cd_res
+tbl(origin_db, 'r_cadesclconcd_ifn3') %>%
+  rename(
+    idcadesccon = idcaducesclerconif
+  ) %>%
+  copy_to(
+    dest = final_db, df = ., name = 'ifn3_cadesccon_cd_res',
     overwrite = TRUE, temporary = FALSE
   )
 
