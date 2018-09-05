@@ -592,6 +592,15 @@ tbl(origin_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     name = 'ifn4_parcela_res', overwrite = TRUE, temporary = FALSE
   )
 
+tbl(origin_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
+  mutate(IdCD = as.character(IdCD)) %>%
+  collect() %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  copy_to(
+    final_db, df = .,
+    name = 'ifn4_parcela_cd_res', overwrite = TRUE, temporary = FALSE
+  )
+
 
 #### pool close ####
 poolClose(origin_db)
