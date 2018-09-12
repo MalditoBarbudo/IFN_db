@@ -5574,7 +5574,10 @@ label_thesaurus <- tribble(
   "table_base_data_modifs_validate_label", 'second', NA,
   "Con los filtros actuales no se pueden mostrar datos",
   "Con los filtros actuales no se pueden mostrar datos",
-  "No data can be shown with actual filters on"
+  "No data can be shown with actual filters on",
+  
+  "see_query_label", NA, NA,
+  "Muestra query", "Mostra query", "Show query"
 )
 
 # test
