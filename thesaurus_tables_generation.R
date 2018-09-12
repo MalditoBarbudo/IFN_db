@@ -5499,11 +5499,167 @@ label_thesaurus <- tribble(
   "adv_fil_sig_vars_label", NA, NA,
   "Variables SIG", "Variables SIG", "GIS variables",
   
-  ### continue
+  "sweetalert_shape_click_info_label", "title", NA,
+  'Vamos a ver...', 'Vamos a veure...', "Let's see...",
+  "sweetalert_shape_click_info_label", "btn_labels", NA,
+  'Cerrar', 'Cerrar', "Dismiss",
   
+  "sweetalert_map_base_data_label", "text", NA,
+  'Con los filtros actuales activados no hay parcelas que cumplan los requisitos',
+  'Con los filtros actuales activados no hay parcelas que cumplan los requisitos',
+  'With the actual filters there are no plots complying',
+  "sweetalert_map_base_data_label", "title", NA,
+  'Sin datos', 'Sin dades', 'No data',
   
+  "progress_map_base_data_modifs_label", "message", NA,
+  "Procesando el mapa...", "Processando el mapa...", "Processing the map...",
+  
+  "progress_data_scenario_label", "detail", "sig",
+  "Datos SIG", "Dades SIG", "GIS data",
+  "progress_data_scenario_label", "detail", "clima",
+  "Datos climáticos", "Dades climàtiques", "Climatic data",
+  "progress_data_scenario_label", "detail", "core",
+  "Datos parcelas", "Dades parcel·les", "Plots data",
+  
+  "progress_map_modificator_label", "detail", "first",
+  "Procesando datos...", "Processando dades...", "Processing data...",
+  "progress_map_modificator_label", "detail", "second",
+  "Creando el mapa...", "Creando el mapa...", "Building the map...",
+  
+  "progress_table_data_modificator_label", "detail", "first",
+  "Procesando datos...", "Processando dades...", "Processing data...",
+  
+  "dwl_csv_button_label", NA, NA,
+  "Guardar csv", "Guardar csv", "Save csv",
+  
+  "dwl_xlsx_button_label", NA, NA,
+  "Guardar xlsx", "Guardar xlsx", "Save xlsx",
+  
+  "sigclima_checkboxes_label", NA, NA,
+  "Añadir datos SIG y clima a la descarga",
+  "Añadir datos SIG y clima a la descarga",
+  "Add GIS and climatic data to the download",
+  
+  "col_vis_selector_label", NA, NA,
+  "Muestra/Oculta columnas", "Mostra/Oculta columnas", "Show/Hide columns",
+  
+  "col_filter_selector_label", NA, NA,
+  "Selecciona columnas para filtrar", "Selecciona columnas per filtrar",
+  "Select columns to filter by",
+  
+  "apply_table_filters_label", NA, NA,
+  "Aplicar columnas y filtros", "Aplicar columnas y filtros", "Apply filters",
+  
+  "sweetalert_table_base_data_raw_label", "text", NA,
+  'Con los filtros actuales activados no hay parcelas que cumplan los requisitos',
+  'Con los filtros actuales activados no hay parcelas que cumplan los requisitos',
+  'With the actual filters there are no plots complying',
+  "sweetalert_table_base_data_raw_label", "title", NA,
+  'Sin datos', 'Sin dades', 'No data',
+  
+  "progress_table_base_data_label", "message", NA,
+  "Procesando la tabla...", "Processando la tabla...", "Processing the table",
+  
+  "progress_table_base_data_raw_label", "message", NA,
+  "Recolectando datos...", "Recollectando dades...", "Retrieving data...",
+  
+  "progress_table_base_data_modifs_label", "message", NA,
+  "Un poco de carpintería...", "Un poc de carpinteria...", "Some data carpentry...",
+  
+  "col_filter_h4_label", NA, NA,
+  "Filtros", "Filtres", "Filters",
+  
+  "table_base_data_modifs_validate_label", 'first', NA,
+  "No hay datos", "No hi ha dades", "No data",
+  "table_base_data_modifs_validate_label", 'second', NA,
+  "Con los filtros actuales no se pueden mostrar datos",
+  "Con los filtros actuales no se pueden mostrar datos",
+  "No data can be shown with actual filters on"
 )
 
+# test
+label_thesaurus %>%
+  filter(
+    label_id == 'sweetalert_table_base_data_raw_label',
+    label_sub1 == 'text'
+  ) %>%
+  magrittr::extract2('esp')
+
+copy_to(
+  final_db, label_thesaurus, 'label_thesaurus',
+  overwrite = TRUE, temporary = FALSE
+)
+
+## infopanel_variables ####
+infopanel_variables_thesaurus <- tribble(
+  ~infopanel_variable_id, ~esp, ~cat, ~eng,
+  "idparcela","ID parcela", "ID parcel·la", "ID plot",
+  "idclasse","ID clase", "ID classe", "ID class",
+  "idcd",'Clase diamétrica', 'Classe diametrica', "Diamter Class",
+  "cadesccon_dom_percdens","Caducifolia/Esclerofila/Conifera dominante por densidad", "Caducifoli/Esclerofil/Conifera dominant per densitat", "Dominant Deciduous/Sclerophyllous/Conifer by density",
+  "cadesccon_dom_percdens_val","Porcentaje Densidad Caducifolia/Esclerofila/Conifera dominante", "Percentatge Densitat Caducifoli/Esclerofil/Conifera dominant", "Density Percentage Dominant Deciduous/Sclerophyllous/Conifer",
+  "cadesccon_dom_percab","Caducifolia/Esclerofila/Conifera dominante por área basal", "Caducifoli/Esclerofil/Conifera dominant per àrea basal", "Dominant Deciduous/Sclerophyllous/Conifer by basal area",
+  "cadesccon_dom_percab_val","Porcentaje Área Basal Caducifolia/Esclerofila/Conifera dominante", "Percentatge Àrea Basal Caducifoli/Esclerofil/Conifera dominant", "Basal Area Percentage Dominant Deciduous/Sclerophyllous/Conifer",
+  "planifconif_dom_percdens","Planifolia/Conifera dominante por densidad", "Planifoli/Conifera dominant per densitat", "Dominant Broadleaf/Conifer by density",
+  "planifconif_dom_percdens_val","Porcentaje Densidad Planifolia/Conifera dominante", "Percentatge Densitat Planifoli/Conifera dominant", "Density Percentage Dominant Broadleaf/Conifer",
+  "planifconif_dom_percab","Planifolia/Conifera dominante por área basal", "Planifoli/Conifera dominant per àrea basal", "Dominant Broadleaf/Conifer by basal area",
+  "planifconif_dom_percab_val","Porcentaje Área Basal Planifolia/Conifera dominante", "Percentatge Àrea Basal Planifoli/Conifera dominant", "Basal Area Percentage Dominant Broadleaf/Conifer",
+  "genere_dom_percdens","Género dominante por densidad", "Gènere dominant per densitat", "Dominant Genera by density",
+  "genere_dom_percdens_val","Porcentaje Densidad Género dominante", "Percentatge Densitat Gènere dominant", "Density Percentage Dominant genera",
+  "genere_dom_percab","Género dominante por área basal", "Gènere dominant per àrea basal", "Dominant Genera by basal area",
+  "genere_dom_percab_val","Porcentaje Área Basal Género dominante", "Percentatge Àrea Basal Gènere dominant", "Basal Area Percentage Dominant Genera",
+  "especiesimp_dom_percdens","Especie simplificado dominante por densidad", "Espècie simplificat dominant per densitat", "Dominant Simplified Species by density",
+  "especiesimp_dom_percdens_val","Porcentaje Densidad Especie simplificado dominante", "Percentatge Densitat Espècie simplificat dominant", "Density Percentage Dominant Simplified Species",
+  "especiesimp_dom_percab","Especie simplificado dominante por densidad", "Espècie simplificat dominant per àrea basal", "Dominant Simplified Species by basal area",
+  "especiesimp_dom_percab_val","Porcentaje Densidad Especie simplificado dominante", "Percentatge Àrea Basal Espècie simplificat dominant", "Basal Area Percentage Dominant Simplified Species",
+  "especie_dom_percdens","Especie dominante por densidad", "Espècie dominant per densitat", "Dominant Species by density",
+  "especie_dom_percdens_val","Porcentaje Densidad Especie dominante", "Percentatge Densitat Espècie dominant", "Density Percentage Dominant Species",
+  "especie_dom_percab","Especie dominante por densidad", "Espècie dominant per àrea basal", "Dominant Species by basal area",
+  "especie_dom_percab_val","Porcentaje Densidad Especie dominante", "Percentatge Àrea Basal Espècie dominant", "Basal Area Percentage Dominant Species",
+  "densitat","Densidad total parcela", "Densitat total parcel·la", "Total Plot Density",
+  "densitatmorts","Densidad total pies muertos parcela", "Densitat total peus morts parcel·la", "Total Plot Density Dead Trees",
+  "ab","Área Basal total parcela", "Àrea Basal total parcel·la", "Total Plot Basal Area",
+  "abmorts","Área Basal total pies muertos parcela", "Àrea Basal total peus morts parcel·la", "Total Plot Basal Area Dead Trees",
+  "dbh","Diámetro a la altura del pecho parcela", "Diàmetre a l'altura del pit parcel·la", "Diameter at Breast Height Plot",
+  "dbhmorts","Diámetro a la altura del pecho pies muertos parcela", "Diàmetre a l'altura del pit peus morts parcel·la", "Diameter at Breast Height Dead Trees plot",
+  "rc","rc", "rc", "rc",
+  "vcc","vcc", "vcc", "vcc",
+  "vccmorts","vccmorts", "vccmorts", "vccmorts",
+  "vsc","vsc", "vsc", "vsc",
+  "vscmorts","vscmorts", "vscmorts", "vscmorts",
+  "bm","bm", "bm", "bm",
+  "bc","bc", "bc", "bc",
+  "br","br", "br", "br",
+  "bh","bh", "bh", "bh",
+  "bat","bat", "bat", "bat",
+  "iaf","iaf", "iaf", "iaf",
+  "cm","cm", "cm", "cm",
+  "cc","cc", "cc", "cc",
+  "cr","cr", "cr", "cr",
+  "ch","ch", "ch", "ch",
+  "cat","cat", "cat", "cat",
+  "cca","cca", "cca", "cca",
+  "ordredens",'Orden por densidad', 'Ordre per Densitat', 'Rank by Density',
+  "ordreab",'Orden por área basal', 'Ordre per Àrea Basal', 'Rank by Basal Area',
+  "percdens",'Porcentaje densidad', 'Percentatge Densitat', 'Density Percentage',
+  "percab",'Porcentaje área basal', 'Percentatge Àrea Basal', 'Basal Area Percentage',
+  # x values
+  'idespecie','Especie', 'Espècie', 'Species',
+  'idespeciesimp','Especie simplificada', 'Espècie simplificat', 'Simplified Species',
+  'idgenere','Género', 'Gènere', 'Genera',
+  'idcadesccon','Caducifolia/Esclerófila/Conífera', 'Conífera/Caducifoli/Esclerofil·le', 'Deciduous/Sclerophyllous/Conifer',
+  'idplanifconif','Planifolia/Conífera', 'Conífera/Planifoli', 'Broadleaf/Conifer'
+)
+
+# test
+infopanel_variables_thesaurus %>%
+  dplyr::filter(infopanel_variable_id == 'idcd') %>%
+  magrittr::extract2('esp')
+
+copy_to(
+  final_db, infopanel_variables_thesaurus, 'infopanel_variables_thesaurus',
+  overwrite = TRUE, temporary = FALSE
+)
 
 #### pool close ####
 poolClose(final_db)
