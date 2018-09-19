@@ -5664,5 +5664,51 @@ copy_to(
   overwrite = TRUE, temporary = FALSE
 )
 
+## infopanel plot ####
+infopanel_plot_thesaurus <- tribble(
+  ~cd_id, ~scenario_id, ~shape_id, ~label_id, ~esp, ~cat, ~eng,
+  "cd", "scenario1", "plot", "title", "Parcela #{click$id}", "Parcel·la #{click$id}", "Plot #{click$id}",
+  "cd", "scenario1", "plot", "subtitle", "por clase diamétrica", "per classe diamètrica", "by diameter class",
+  "cd", "scenario1", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "cd", "scenario1", "polygon", "subtitle", "por clase diamétrica", "per classe diamètrica", "by diameter class",
+  
+  "cd", "scenario2", "plot", "title", "Parcela #{click$id}", "Parcel·la #{click$id}", "Plot #{click$id}",
+  "cd", "scenario2", "plot", "subtitle", "por clase diamétrica y grupo funcional", "per classe diamètrica i grup funcional", "by diameter class and functional group",
+  "cd", "scenario2", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "cd", "scenario2", "polygon", "subtitle", "por clase diamétrica y grupo funcional", "per classe diamètrica i grup funcional", "by diameter class and functional group",
+  
+  "cd", "scenario3", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "cd", "scenario3", "polygon", "subtitle", "por clase diamétrica", "per classe diamètrica", "by diameter class",
+  
+  "cd", "scenario4", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "cd", "scenario4", "polygon", "subtitle", "por clase diamétrica y grupo funcional", "per classe diamètrica i grup funcional", "by diameter class and functional group",
+  
+  "nocd", "scenario1", "plot", "title", "Parcela #{click$id}", "Parcel·la #{click$id}", "Plot #{click$id}",
+  "nocd", "scenario1", "plot", "subtitle", "por grupo funcional dominante en densidad", "per grup funcional dominant en densitat", "by dominant functional group in density",
+  "nocd", "scenario1", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "nocd", "scenario1", "polygon", "subtitle", "por grupo funcional dominante en densidad", "per grup funcional dominant en densitat", "by dominant functional group in density",
+  
+  "nocd", "scenario2", "plot", "title", "Parcela #{click$id}", "Parcel·la #{click$id}", "Plot #{click$id}",
+  "nocd", "scenario2", "plot", "subtitle", "por nivel de agregación seleccionado", "per nivell d'agregació seleccionat", "by selected aggregation level",
+  "nocd", "scenario2", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "nocd", "scenario2", "polygon", "subtitle", "por nivel de agregación seleccionado", "per nivell d'agregació seleccionat", "by selected aggregation level",
+  
+  "nocd", "scenario3", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "nocd", "scenario3", "polygon", "subtitle", "por grupo funcional dominante en densidad", "per grup funcional dominant en densitat", "by dominant functional group in density",
+  
+  "nocd", "scenario4", "polygon", "title", "Parcelas #{click$id}", "Parcel·les #{click$id}", "Plots #{click$id}",
+  "nocd", "scenario4", "polygon", "subtitle", "por nivel de agregación seleccionado", "per nivell d'agregació seleccionat", "by selected aggregation level"
+)
+
+# test
+infopanel_plot_thesaurus %>%
+  dplyr::filter(cd_id == 'cd', scenario_id == 'scenario3', shape_id == 'polygon', label_id == 'title') %>%
+  magrittr::extract2('esp')
+
+copy_to(
+  final_db, infopanel_plot_thesaurus, 'infopanel_plot_thesaurus',
+  overwrite = TRUE, temporary = FALSE
+)
+
 #### pool close ####
 poolClose(final_db)
