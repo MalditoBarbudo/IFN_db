@@ -60,7 +60,8 @@ admin_div_thesaurus <- tribble(
   "provincia", "Provincias", "Provincies", "Provinces",
   "vegueria", "Veguerias", "Vegueries", "Vegueries",
   "comarca", "Comarcas", "Comarques", "Region",
-  "municipi", "Municipios", "Municipis", "Municipalities"
+  "municipi", "Municipios", "Municipis", "Municipalities",
+  "delegacio", "Delegaciones", "Delegacions", "Delegations"
 )
 
 # test
@@ -111,6 +112,11 @@ polygons_provincies <- rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpp1_201
   rmapshaper::ms_simplify(0.01) %>%
   sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
 
+polygons_delegacions <- rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
+                                       GDAL1_integer64_policy = FALSE) %>%
+  rmapshaper::ms_simplify(0.01) %>%
+  sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+
 polygons_enpe <- rgdal::readOGR('data_raw/shapefiles', 'enpe_2017',
                                 GDAL1_integer64_policy = FALSE) %>%
   rmapshaper::ms_simplify(0.01) %>%
@@ -143,12 +149,20 @@ names_provincias <- c(
   sort(as.character(polygons_provincies@data$NOMPROV))
 )
 
+names_delegacions <- c(
+  sort(as.character(polygons_delegacions@data$comarcas_d))
+)
+
 admin_div_fil_thesaurus <- tribble(
   ~admin_div_fil_id, ~esp, ~cat, ~eng,
   "provincia",
   c('Todas', names_provincias),
   c('Totes', names_provincias),
   c('All', names_provincias),
+  "delegacio",
+  c('Todas', names_delegacions),
+  c('Totes', names_delegacions),
+  c('All', names_delegacions),
   "vegueria",
   c('Todas', names_veguerias),
   c('Totes', names_veguerias),
@@ -3761,6 +3775,7 @@ col_vis_thesaurus <- tribble(
   c(
     "idparcela",
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -3853,6 +3868,7 @@ col_vis_thesaurus <- tribble(
   c(
     "ID parcela",
     "Provincia",
+    "Delegación",
     'Vegeueria',
     'Comarca',
     'Municipio',
@@ -3946,6 +3962,7 @@ col_vis_thesaurus <- tribble(
   c(
     "idparcela",
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -4027,6 +4044,7 @@ col_vis_thesaurus <- tribble(
   c(
     "ID parcela",
     "Provincia",
+    "Delegación",
     'Vegeueria',
     'Comarca',
     'Municipio',
@@ -4108,6 +4126,7 @@ col_vis_thesaurus <- tribble(
   'nocd', 'scenario3',
   c(
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -4294,6 +4313,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "Provincia",
+    "Delegación",
     "Vegueria",
     "Comarca",
     "Municipio",
@@ -4481,6 +4501,7 @@ col_vis_thesaurus <- tribble(
   'nocd', 'scenario4',
   c(
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -4648,6 +4669,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "Provincia",
+    "Delegación",
     "Vegueria",
     "Comarca",
     "Municipio",
@@ -4817,6 +4839,7 @@ col_vis_thesaurus <- tribble(
   c(
     'idparcela',
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -4888,6 +4911,7 @@ col_vis_thesaurus <- tribble(
   c(
     "ID parcela",
     "Provincia",
+    "Delegación",
     'Vegeueria',
     'Comarca',
     'Municipio',
@@ -4960,6 +4984,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario2',
   c(
     "idparcela",
+    "delegacio",
     'provincia',
     'vegueria',
     'comarca',
@@ -5037,6 +5062,7 @@ col_vis_thesaurus <- tribble(
   c(
     "ID parcela",
     "Provincia",
+    "Delegación",
     'Vegeueria',
     'Comarca',
     'Municipio',
@@ -5115,6 +5141,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario3',
   c(
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -5254,6 +5281,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "Provincia",
+    "Delegación",
     "Vegueria",
     "Comarca",
     "Municipio",
@@ -5395,6 +5423,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario4',
   c(
     'provincia',
+    "delegacio",
     'vegueria',
     'comarca',
     'municipi',
@@ -5539,6 +5568,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "Provincia",
+    "Delegación",
     "Vegueria",
     "Comarca",
     "Municipio",
