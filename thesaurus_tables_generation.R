@@ -56,7 +56,7 @@ copy_to(
 ## admin_div choices ####
 admin_div_thesaurus <- tribble(
   ~admin_div_id, ~esp, ~cat, ~eng,
-  "","Cataluña","Catalunya","Catalonia",
+  "comunidad","Cataluña","Catalunya","Catalonia",
   "provincia", "Provincias", "Provincies", "Provinces",
   "vegueria", "Veguerias", "Vegueries", "Vegueries",
   "comarca", "Comarcas", "Comarques", "Region",
@@ -117,6 +117,11 @@ polygons_delegacions <- rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
   rmapshaper::ms_simplify(0.01) %>%
   sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
 
+polygons_catalunya <- rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
+                                     GDAL1_integer64_policy = FALSE) %>%
+  rmapshaper::ms_simplify(0.01) %>%
+  sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+
 polygons_enpe <- rgdal::readOGR('data_raw/shapefiles', 'enpe_2017',
                                 GDAL1_integer64_policy = FALSE) %>%
   rmapshaper::ms_simplify(0.01) %>%
@@ -153,8 +158,16 @@ names_delegacions <- c(
   sort(as.character(polygons_delegacions@data$comarcas_d))
 )
 
+names_comunidades <- c(
+  sort(as.character(polygons_catalunya@data$NOM_CA))
+)
+
 admin_div_fil_thesaurus <- tribble(
   ~admin_div_fil_id, ~esp, ~cat, ~eng,
+  "comunidad",
+  c(names_comunidades),
+  c(names_comunidades),
+  c(names_comunidades),
   "provincia",
   c('Todas', names_provincias),
   c('Totes', names_provincias),
@@ -3774,6 +3787,7 @@ col_vis_thesaurus <- tribble(
   'nocd', 'scenario1',
   c(
     "idparcela",
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -3867,6 +3881,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "ID parcela",
+    "Comunidad Autónoma",
     "Provincia",
     "Delegación",
     'Vegeueria',
@@ -3961,6 +3976,7 @@ col_vis_thesaurus <- tribble(
   'nocd', 'scenario2',
   c(
     "idparcela",
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -4043,6 +4059,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "ID parcela",
+    "Comunidad",
     "Provincia",
     "Delegación",
     'Vegeueria',
@@ -4125,6 +4142,7 @@ col_vis_thesaurus <- tribble(
   ),
   'nocd', 'scenario3',
   c(
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -4312,6 +4330,7 @@ col_vis_thesaurus <- tribble(
     "npp_s_mean"
   ),
   c(
+    "Comunidad autónoma",
     "Provincia",
     "Delegación",
     "Vegueria",
@@ -4500,6 +4519,7 @@ col_vis_thesaurus <- tribble(
   ),
   'nocd', 'scenario4',
   c(
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -4668,6 +4688,7 @@ col_vis_thesaurus <- tribble(
     "npp_s_mean"
   ),
   c(
+    "Comunidad autónoma",
     "Provincia",
     "Delegación",
     "Vegueria",
@@ -4838,6 +4859,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario1',
   c(
     'idparcela',
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -4910,6 +4932,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "ID parcela",
+    "Comunidad autónoma",
     "Provincia",
     "Delegación",
     'Vegeueria',
@@ -4984,6 +5007,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario2',
   c(
     "idparcela",
+    "comunidad",
     "delegacio",
     'provincia',
     'vegueria',
@@ -5061,6 +5085,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "ID parcela",
+    "Comunidad autónoma",
     "Provincia",
     "Delegación",
     'Vegeueria',
@@ -5141,6 +5166,7 @@ col_vis_thesaurus <- tribble(
   'cd', 'scenario3',
   c(
     'provincia',
+    "comunidad",
     "delegacio",
     'vegueria',
     'comarca',
@@ -5281,6 +5307,7 @@ col_vis_thesaurus <- tribble(
   ),
   c(
     "Provincia",
+    "Comunidad autónoma",
     "Delegación",
     "Vegueria",
     "Comarca",
@@ -5422,6 +5449,7 @@ col_vis_thesaurus <- tribble(
   
   'cd', 'scenario4',
   c(
+    "comunidad",
     'provincia',
     "delegacio",
     'vegueria',
@@ -5567,6 +5595,7 @@ col_vis_thesaurus <- tribble(
     "npp_s_mean"
   ),
   c(
+    "Comunidad autónoma",
     "Provincia",
     "Delegación",
     "Vegueria",

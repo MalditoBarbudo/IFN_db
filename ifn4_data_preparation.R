@@ -79,7 +79,8 @@ coords_latlong_WGS84_ifn4 <- spTransform(
 joined_ifn4_sig_tables %>%
   mutate(
     longitude = as.numeric(coords_latlong_WGS84_ifn4@coords[,1]),
-    latitude = as.numeric(coords_latlong_WGS84_ifn4@coords[,2])
+    latitude = as.numeric(coords_latlong_WGS84_ifn4@coords[,2]),
+    comunidad = 'Catalunya'
   ) %>%
   left_join({
     tbl(final_db, 'ifn3_sig') %>%

@@ -65,7 +65,8 @@ tbl(origin_db, 'parcelaifn2_sig') %>%
     utm_x = as.numeric(coords_utm_ETRS89_ifn2@coords[,1]),
     utm_y = as.numeric(coords_utm_ETRS89_ifn2@coords[,2]),
     longitude = as.numeric(coords_latlong_WGS84_ifn2@coords[,1]),
-    latitude = as.numeric(coords_latlong_WGS84_ifn2@coords[,2])
+    latitude = as.numeric(coords_latlong_WGS84_ifn2@coords[,2]),
+    comunidad = 'Catalunya'
   ) %>%
   copy_to(
     dest = final_db, df = ., name = 'ifn2_sig',
@@ -103,7 +104,8 @@ tbl(origin_db, 'parcelaifn3_sig') %>%
     utm_x = as.numeric(coords_utm_ETRS89_ifn3@coords[,1]),
     utm_y = as.numeric(coords_utm_ETRS89_ifn3@coords[,2]),
     longitude = as.numeric(coords_latlong_WGS84_ifn3@coords[,1]),
-    latitude = as.numeric(coords_latlong_WGS84_ifn3@coords[,2])
+    latitude = as.numeric(coords_latlong_WGS84_ifn3@coords[,2]),
+    comunidad = 'Catalunya'
   ) %>%
   copy_to(
     dest = final_db, df = ., name = 'ifn3_sig',
