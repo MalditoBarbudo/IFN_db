@@ -93,9 +93,9 @@ joined_ifn4_sig_tables %>%
   }) %>%
   select(
     idparcela, idclasse, utm_x, utm_y, municipi, comarca, delegacio, provincia,
-    vegueria, nomein, enpes, proteccio, nomppp, nomxarxa2000, pendentpercent,
-    pendentgraus, altitud, orientacio, orientacio_8, orientacio_4, longitude,
-    latitude
+    vegueria, comunidad, nomein, enpes, proteccio, nomppp, nomxarxa2000,
+    pendentpercent, pendentgraus, altitud, orientacio, orientacio_8,
+    orientacio_4, longitude, latitude
   ) %>%
   rename(
     pendentpercentatge = pendentpercent
