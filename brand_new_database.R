@@ -286,3 +286,334 @@ ifn2_ifn3_ifn4_plots %<>%
     old_utm_x_nfi3 = utm_x_nfi3,
     old_utm_y_nfi3 = utm_y_nfi3
   )
+
+#### STEP 4 ####
+# Let's start to add static info to the main table, starting from gis and climatic tables.
+# For this we must do some things:
+# 
+#   1. Start with the NFI_4, it has the better info. Later on NFI_3 and NFI_2
+#   
+#   2. Standardize the variables and their names across the different NFI versions.
+#      The topographic variables will have the topo_ prefix
+#      The administrative variables will have the admin_ prefix
+#      The plot features variables will have the feat_ prefix
+#      The plot climatic variables will have the clim_ prefix
+
+tbl(access4_db, 'Parcela_MDT') %>%
+  collect() %>%
+  ## change the var names to lower letters (not capital)
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  ## separate the idparcela and idclasse as they are joined, removing the _ character
+  ## between the class and subclass
+  tidyr::separate(
+    idparcela, c('idparcela', 'idclasse'), sep = '[_]', extra = 'merge'
+  ) %>%
+  mutate(idclasse = stringr::str_remove(idclasse, '_')) %>%
+  ## select, renaming in the way, the variables
+  select(
+    old_idparcela = idparcela,
+    old_idclasse_nfi4 = idclasse,
+    topo_altitude_asl = altitud,
+    topo_fdm_slope_degrees = pendentgraus,
+    topo_fdm_slope_percentage = pendentpercent,
+    topo_fdm_aspect_degrees = orientacio,
+    topo_fdm_aspect_cardinal_8 = orientacio_8,
+    topo_fdm_aspect_cardinal_4 = orientacio_4,
+    topo_fdm_curvature = curvatura
+  ) %>%
+  
+  ## join with the admin, features and more topo vars
+  full_join(
+    {
+      tbl(access4_db, 'ParcelaIFN4_OLAP') %>%
+        collect() %>% 
+        ## again to lower letters
+        {magrittr::set_names(., tolower(names(.)))} %>%
+        ## select, renaming in the way, the variables (these names will be used later on
+        ## the nfi3 and nfi2 datasets)
+        select(
+          old_idparcela = idparcela,
+          old_idclasse_nfi4 = idclasse,
+          # admin_municipality = municipi,  # TODO We do this with the newest map from the
+          # Catalonian Cartographic Service, with the shapefiles and an sp::over
+          # admin_region = comarca,  # TODO We do this with the newest map from the
+          # Catalonian Cartographic Service, with the shapefiles and an sp::over
+          # admin_province = provincia,  # TODO We do this with the newest map from the
+          # Catalonian Cartographic Service, with the shapefiles and an sp::over
+          feat_plot_type = tipusparcela,
+          feat_soil_use = ussol,
+          feat_forest_cover = coberturabosc,
+          feat_forest_type = tipusbosc,
+          feat_total_canopy_cover = fcctotal,
+          feat_tree_canopy_cover = fccarbrada,
+          feat_spatial_distribution = distribucioespacial,
+          feat_specific_composition = composicioespecifica,
+          feat_rocky = rocositat,
+          feat_soil_texture = texturasol,
+          feat_soil_type_1 = tipussol1,
+          feat_soil_type_2 = tipussol2,
+          feat_erosion = erosio,
+          feat_combustion_model = modelcombustible,
+          feat_org_matter_thickness = gruixmo,
+          feat_cutoff_stock = existenciatallades,
+          feat_stand_improvement_1 = tractamentmillora1,
+          feat_stand_improvement_2 = tractamentmillora2,
+          feat_soil_improvement_1 = tractamentmillorasol1,
+          feat_soil_improvement_2 = tractamentmillorasol2,
+          # topo_aspect_1 = orientacio1, # eliminar
+          # topo_aspect_2 = orientacio2, # eliminar
+          topo_max_slope_percentage_1 = maxpendent1,
+          # topo_max_slope_percentage_2 = maxpendent2, # eliminar
+          feat_pinpoint_easiness = localizacio,
+          feat_access_easiness = acces,
+          feat_sampling_easiness = mostreig,
+          feat_sampling_start_date = datainici,
+          feat_sampling_end_date = datafi,
+          feat_sampling_start_time = horainici,
+          feat_sampling_end_time = horafi,
+          feat_observations = observacions
+        )
+    },
+    by = c('old_idparcela', 'old_idclasse_nfi4')
+  ) %>%
+  
+  ## join with the climatic data
+  full_join(
+    {
+      tbl(access4_db, 'Parcela_Clima') %>%
+        collect() %>%
+        ## separate the idparcela and idclasse as they are joined, removing the _ character
+        ## between the class and subclass
+        {magrittr::set_names(., tolower(names(.)))} %>%
+        tidyr::separate(
+          idparcela, c('idparcela', 'idclasse'), sep = '[_]', extra = 'merge'
+        ) %>%
+        mutate(idclasse = stringr::str_remove(idclasse, '_')) %>%
+        {
+          ## let's change the names to english (in this case with a simple replace)
+          set_names(., stringr::str_replace_all(
+            names(.),
+            c(
+              'gener' = '_jan', 'febrer' = '_feb', 'març' = '_mar', 'abril' = '_apr',
+              'maig' = '_may', 'juny' = '_jun', 'juliol' = '_jul', 'agost' = '_aug',
+              'setembre' = '_sep', 'octubre' = '_oct', 'novembre' = '_nov',
+              'desembre' = '_dec', 'anual' = '_year', 'tmit' = 'tmean'
+            )
+          ))
+        } %>%
+        {
+          ## add the clim_ prefix
+          set_names(., glue::glue("clim_{names(.)}"))
+        } %>% 
+        ## columns order by climatic variable
+        select(
+          old_idparcela = clim_idparcela, old_idclasse_nfi4 = clim_idclasse,
+          -clim_id_grafic, -starts_with('clim_coor'), starts_with('clim_prec'),
+          starts_with('clim_rad'), starts_with('clim_t')
+        )
+    },
+    by = c('old_idparcela', 'old_idclasse_nfi4')
+  ) %>%
+  full_join(
+    {
+      tbl(access4_db, 'Parcela_ETP_ETR') %>%
+        collect() %>%
+        ## separate the idparcela and idclasse as they are joined, removing the _ character
+        ## between the class and subclass
+        {magrittr::set_names(., tolower(names(.)))} %>%
+        tidyr::separate(
+          idparcela, c('idparcela', 'idclasse'), sep = '[_]', extra = 'merge'
+        ) %>%
+        mutate(idclasse = stringr::str_remove(idclasse, '_')) %>%
+        {
+          ## let's change the names to english (in this case with a simple replace)
+          set_names(., stringr::str_replace_all(
+            names(.),
+            c(
+              'gener' = '_jan', 'febrer' = '_feb', 'març' = '_mar', 'abril' = '_apr',
+              'maig' = '_may', 'juny' = '_jun', 'juliol' = '_jul', 'agost' = '_aug',
+              'setembre' = '_sep', 'octubre' = '_oct', 'novembre' = '_nov',
+              'desembre' = '_dec', 'anual' = '_year'
+            )
+          ))
+        } %>%
+        {
+          ## add the clim_ prefix
+          set_names(., glue::glue("clim_{names(.)}"))
+        } %>% 
+        ## columns order by climatic variable
+        select(
+          old_idparcela = clim_idparcela, old_idclasse_nfi4 = clim_idclasse,
+          -clim_id_grafic, -starts_with('clim_coor'), starts_with('clim_etp'),
+          starts_with('clim_etr')
+        )
+    },
+    by = c('old_idparcela', 'old_idclasse_nfi4')
+  )
+  ## as there are topo_ and other prefixes variables mixed, let's order the columns again
+  select(
+    starts_with('old'), starts_with('admin'), starts_with('topo'), starts_with('feat'),
+    starts_with('clim')
+  ) -> ifn4_plot_topo_clim_vars
+
+## TODO ifn3
+## TODO ifn2
+
+
+
+## We need the ownership info, located in a shapefile. We load the shapefile and we apply
+## an over to the belonging of the plots to the variables present in the shapefile
+
+ifn2_ifn3_ifn4_plots %>%
+  select(longitude, latitude) %>% 
+  sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+  sp::over(
+    {
+      rgdal::readOGR('data_raw/ownership_layer', 'Forests',
+                     GDAL1_integer64_policy = FALSE) %>%
+        sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+    }
+  ) %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  as_data_frame() %>%
+  mutate_if(
+    is.factor, ~tolower(as.character(.x))
+  ) %>%
+  mutate(
+    elen = case_when(
+      is.na(elen) ~ NA,
+      elen == 'no' ~ FALSE,
+      TRUE ~ TRUE
+    ),
+    conveni = case_when(
+      is.na(conveni) ~ NA,
+      conveni == 'no' ~ FALSE,
+      TRUE ~ TRUE
+    ),
+    ordenacio = case_when(
+      is.na(ordenacio) ~ NA,
+      ordenacio == 'no' ~ FALSE,
+      TRUE ~ TRUE
+    ),
+    certific = case_when(
+      is.na(certific) ~ NA,
+      certific == 'no' ~ FALSE,
+      TRUE ~ TRUE
+    ),
+    # we create a new variable because the ownership type private is not really private,
+    # and all the NA plots are really really private
+    feat_ownership_regime = case_when(
+      is.na(tip_prop) ~ 'privat',
+      TRUE ~ 'public'
+    )
+  ) %>%
+  bind_cols(
+    ifn2_ifn3_ifn4_plots %>%
+      select(old_idparcela, old_idclasse_nfi4)
+  ) %>% 
+  select(
+    old_idparcela, old_idclasse_nfi4,
+    feat_forest_id = fo_codi,
+    feat_forest_name = forest,
+    feat_ownership_type = tip_prop,
+    feat_ownership_regime,
+    feat_cup = cup, # TODO Revisar
+    feat_elen = elen, # TODO Revisar
+    feat_owner = titular,
+    feat_agreement = conveni,
+    feat_management = ordenacio,
+    feat_certificate = certific
+  ) -> ownership_info
+
+## We also need the updated administrative divisions info. For that, again we load the
+## shapefiles from the administrative divs and use sp::over
+
+delegations_dic <- read_csv('comarcas_delegaciones.csv')
+
+ifn2_ifn3_ifn4_plots %>%
+  select(longitude, latitude) %>% 
+  sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+  sp::over(
+    {
+      rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpm1_20180101_0',
+                     GDAL1_integer64_policy = FALSE) %>%
+        sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+    }
+  ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpc1_20180101_0',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        )
+    }
+  ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpv1_20180101_0',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        )
+    }
+  ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpp1_20180101_0',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        )
+    }
+  ) %>%
+  as_data_frame() %>%
+  mutate_if(
+    is.factor, as.character
+  ) %>%
+  left_join(delegations_dic, by = c('NOMCOMAR' = 'comarca')) %>%
+  select(
+    admin_province = NOMPROV,
+    admin_delegation = delegacio,
+    admin_region = NOMCOMAR,
+    admin_vegueria = NOMVEGUE,
+    admin_municipality = NOMMUNI,
+    admin_province_id = CODIPROV,
+    admin_region_id = CODICOMAR,
+    admin_municipality_id = CODIMUNI
+  ) -> admin_info
+
+## TODO Check this cases
+admin_info %>% filter(admin_province == 'Barcelona') %>% pull(admin_delegation) %>% unique()
+admin_info %>% filter(admin_province == 'Girona') %>% pull(admin_delegation) %>% unique()
+admin_info %>% filter(admin_province == 'Lleida') %>% pull(admin_delegation) %>% unique()
+admin_info %>% filter(admin_province == 'Tarragona') %>% pull(admin_delegation) %>% unique()
+admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona')
+
+# test join
+# ifn2_ifn3_ifn4_plots %>%
+#   left_join(
+#     ifn4_plot_topo_clim_vars, by = c('old_idparcela', 'old_idclasse_nfi4')
+#   ) -> test_all
+
+
+
+
+
+
+
