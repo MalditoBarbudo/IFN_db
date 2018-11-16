@@ -941,6 +941,8 @@ ifn2_ifn3_ifn4_plots %>%
   left_join(ownership_info, by = 'plot_id') %>%
   left_join(topo_clim_info, by = 'plot_id') -> PLOTS
 
+## TODO Recalculate ETR and ETP from Miramon maps
+
 poolClose(oracle_db)
 poolClose(access4_db)
 
