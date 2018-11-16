@@ -237,7 +237,7 @@ ifn2_ifn3_ifn4_plots <- full_join(
 ifn2_ifn3_ifn4_plots %<>%
   arrange(idparcela) %>% 
   mutate(
-    plot_id = paste0('P_', 1:nrow(.))
+    plot_id = paste0('P_', str_pad(1:nrow(.), 5, 'left', '0'))
   ) %>%
   
   # Now, and this is tricky, we need to update the info from ifn4 in those plots that have
@@ -299,6 +299,13 @@ ifn2_ifn3_ifn4_plots %<>%
 #      The plot features variables will have the feat_ prefix
 #      The plot climatic variables will have the clim_ prefix
 
+## NFI 4
+
+# we will need later the table TesaureGruixMO to be able to convert the numeric id of
+# organic matter thickness to the real character value
+gruixmo_thes <- tbl(access4_db, 'TesaureGruixMO') %>%
+  collect()
+
 tbl(access4_db, 'Parcela_MDT') %>%
   collect() %>%
   ## change the var names to lower letters (not capital)
@@ -334,12 +341,6 @@ tbl(access4_db, 'Parcela_MDT') %>%
         select(
           old_idparcela = idparcela,
           old_idclasse_nfi4 = idclasse,
-          # admin_municipality = municipi,  # TODO We do this with the newest map from the
-          # Catalonian Cartographic Service, with the shapefiles and an sp::over
-          # admin_region = comarca,  # TODO We do this with the newest map from the
-          # Catalonian Cartographic Service, with the shapefiles and an sp::over
-          # admin_province = provincia,  # TODO We do this with the newest map from the
-          # Catalonian Cartographic Service, with the shapefiles and an sp::over
           feat_plot_type = tipusparcela,
           feat_soil_use = ussol,
           feat_forest_cover = coberturabosc,
@@ -449,20 +450,279 @@ tbl(access4_db, 'Parcela_MDT') %>%
         )
     },
     by = c('old_idparcela', 'old_idclasse_nfi4')
-  )
+  ) %>%
   ## as there are topo_ and other prefixes variables mixed, let's order the columns again
   select(
     starts_with('old'), starts_with('admin'), starts_with('topo'), starts_with('feat'),
     starts_with('clim')
-  ) -> ifn4_plot_topo_clim_vars
+  ) %>%
+  left_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(NFI_4) %>%
+        select(plot_id, old_idparcela, old_idclasse_nfi4)
+        
+    }
+  ) %>%
+  # convert the feat_org_matter_thickness to the real character value
+  left_join(
+    gruixmo_thes %>% select(1:2), by = c('feat_org_matter_thickness' = 'IdGruixMO')
+  ) %>% 
+  mutate(
+    feat_org_matter_thickness = GruixMO
+  ) %>% 
+  select(plot_id, everything(), -GruixMO) -> ifn4_plot_topo_clim_vars
 
-## TODO ifn3
-## TODO ifn2
+## TODO Separate the dynamic data from the static data
 
+## NFI3
+tbl(oracle_db, 'parcelaifn3') %>%
+  collect() %>%
+  # we select (and rename in the fly) the variables of interest in this table
+  select(
+    old_idparcela = idparcela,
+    old_idclasse_nfi3 = idclasse,
+    feat_plot_type = tipusparcela,
+    feat_soil_use = ussol,
+    feat_level_2 = nivell2, ## TODO Repasar
+    feat_forest_cover = fccnivell2,
+    feat_total_canopy_cover = fcctotal,
+    feat_tree_canopy_cover = fccarboria,
+    feat_spatial_distribution = distribucioespacial,
+    feat_specific_composition = composicioespecifica,
+    feat_rocky = rocositat,
+    feat_soil_texture = texturasol,
+    feat_org_matter_content = contingutmo,
+    feat_soil_ph_class = phsol,
+    feat_soil_ph_value = valorphsol,
+    feat_soil_type_1 = tipussol1,
+    feat_soil_type_2 = tipussol2,
+    feat_erosion = erosio,
+    feat_soil_surface_ph = phsolsuperficie,
+    feat_combustion_model = idmodelcombustible,
+    feat_org_matter_thickness = gruixmo,
+    feat_cutoff_stock_type = talladaregeneracio,
+    feat_stand_improvement_1 = milloravol1,
+    feat_stand_improvement_2 = milloravol2,
+    feat_soil_improvement_1 = millorasol1,
+    feat_soil_improvement_2 = millorasol2,
+    # topo_aspect_1 = orientacio1, # eliminar
+    # topo_aspect_2 = orientacio2, # eliminar
+    topo_max_slope_percentage_1 = pendent1,
+    # topo_max_slope_percentage_2 = pendent2, # eliminar
+    feat_pinpoint_easiness = localitzacio,
+    feat_access_easiness = acces,
+    feat_sampling_easiness = aixecament,
+    feat_sampling_start_date = datamostreig,
+    # feat_sampling_end_date = datafi, # does not exist
+    feat_sampling_start_time = tempsmostreig,
+    # feat_sampling_end_time = horafi, # does not exist
+    feat_observations = observacions
+  ) %>%
+  full_join(
+    {
+      tbl(oracle_db, 'parcelaifn3_sig') %>%
+        collect() %>%
+        # selecting and renaming the vars
+        select(
+          old_idparcela = idparcela,
+          old_idclasse_nfi3 = idclasse,
+          topo_altitude_asl = altitud,
+          topo_fdm_slope_degrees = pendentgraus,
+          topo_fdm_slope_percentage = pendentpercentatge,
+          topo_fdm_aspect_degrees = orientacio,
+          topo_fdm_aspect_cardinal_8 = orientacio_c8,
+          topo_fdm_aspect_cardinal_4 = orientacio_c4,
+        )
+    },
+    by = c('old_idparcela', 'old_idclasse_nfi3')
+  ) %>%
+  full_join(
+    {
+      tbl(oracle_db, 'parcelaifn3_clima') %>%
+        collect() %>%
+        {
+          ## let's change the names to english (in this case with a simple replace)
+          set_names(., stringr::str_replace_all(
+            names(.),
+            c(
+              # months and year
+              'gener' = '_jan', 'febrer' = '_feb', 'març' = '_mar', 'abril' = '_apr',
+              'maig' = '_may', 'juny' = '_jun', 'juliol' = '_jul', 'agost' = '_aug',
+              'setembre' = '_sep', 'octubre' = '_oct', 'novembre' = '_nov',
+              'desembre' = '_dec', 'anual' = '_year',
+              
+              # var names
+              'radiacio' = 'rad', 'temperaturaminima' = 'tmin',
+              'temperaturamaxima' = 'tmax', 'temperaturamitjana' = 'tmean',
+              'precipitacio' = 'prec',
+              'etr_s_' = 'etr_s', 'etr_p_' = 'etr_p'
+            )
+          ))
+        } %>%
+        {
+          ## add the clim_ prefix
+          set_names(., glue::glue("clim_{names(.)}"))
+        } %>% 
+        ## columns order by climatic variable
+        select(
+          old_idparcela = clim_idparcela, old_idclasse_nfi3 = clim_idclasse,
+          -starts_with('clim_coor'), starts_with('clim_prec'),
+          starts_with('clim_rad'), starts_with('clim_t'),
+          starts_with('clim_etp'), starts_with('clim_etr'), starts_with('clim_npp')
+        )
+    },
+    by = c('old_idparcela', 'old_idclasse_nfi3')
+  ) %>% 
+  right_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(!NFI_4, NFI_3) %>%
+        select(plot_id, old_idparcela, old_idclasse_nfi3)
+      
+    }
+  ) %>%
+  mutate(
+   # we need to convert to cardinal points the topo_fdm_cardinal_X vars
+    topo_fdm_aspect_cardinal_8 = case_when(
+      topo_fdm_aspect_cardinal_8 == 0 ~ 'N',
+      topo_fdm_aspect_cardinal_8 == 45 ~ 'NE',
+      topo_fdm_aspect_cardinal_8 == 90 ~ 'E',
+      topo_fdm_aspect_cardinal_8 == 135 ~ 'SE',
+      topo_fdm_aspect_cardinal_8 == 180 ~ 'S',
+      topo_fdm_aspect_cardinal_8 == 225 ~ 'SW',
+      topo_fdm_aspect_cardinal_8 == 270 ~ 'W',
+      topo_fdm_aspect_cardinal_8 == 315 ~ 'NW'
+    ),
+    topo_fdm_aspect_cardinal_4 = case_when(
+      topo_fdm_aspect_cardinal_4 == 0 ~ 'N',
+      topo_fdm_aspect_cardinal_4 == 90 ~ 'E',
+      topo_fdm_aspect_cardinal_4 == 180 ~ 'S',
+      topo_fdm_aspect_cardinal_4 == 270 ~ 'W'
+    ),
+    # feat_combustion_model must be character
+    feat_combustion_model = as.character(feat_combustion_model)
+  ) %>%
+  select(plot_id, everything()) -> ifn3_plot_topo_clim_vars
 
+## TODO Separate the dynamic data from the static data
 
+## NFI2
+tbl(oracle_db, 'parcelaifn2') %>%
+  collect() %>%
+  # we select (and rename in the fly) the variables of interest in this table
+  select(
+    old_idparcela = idparcela,
+    feat_soil_use = ussolcamp,
+    feat_canopy_cover_level_2 = classecobertura, ## TODO Repasar
+    feat_total_canopy_cover = fcccamp,
+    feat_spatial_distribution = distribucioespacial,
+    feat_specific_composition = composicioespecifica,
+    feat_soil_texture = texturasol,
+    feat_erosion = erosio,
+    feat_cutoff_stock_type = talladaregeneracio,
+    feat_stand_improvement_1 = milloravol1,
+    feat_stand_improvement_2 = milloravol2,
+    feat_soil_improvement_1 = millorasol1,
+    feat_soil_improvement_2 = millorasol2,
+    topo_max_slope_percentage_1 = pendent1,
+    feat_sampling_start_date = anymostreig
+  ) %>%
+  full_join(
+    {
+      tbl(oracle_db, 'parcelaifn2_sig') %>%
+        collect() %>%
+        select(
+          old_idparcela = idparcela,
+          feat_canopy_type = tipuscoberta,
+          topo_altitude_asl = altitud,
+          topo_fdm_slope_degrees = pendentgraus,
+          topo_fdm_slope_percentage = pendentpercentatge,
+          topo_fdm_aspect_degrees = orientacio,
+          topo_fdm_aspect_cardinal_8 = orientacio_c8,
+          topo_fdm_aspect_cardinal_4 = orientacio_c4,
+        )
+    },
+    by = 'old_idparcela'
+  ) %>%
+  full_join(
+    {
+      tbl(oracle_db, 'parcelaifn2_clima') %>%
+        collect() %>%
+        {
+          ## let's change the names to english (in this case with a simple replace)
+          set_names(., stringr::str_replace_all(
+            names(.),
+            c(
+              # months and year
+              'gener' = '_jan', 'febrer' = '_feb', 'març' = '_mar', 'abril' = '_apr',
+              'maig' = '_may', 'juny' = '_jun', 'juliol' = '_jul', 'agost' = '_aug',
+              'setembre' = '_sep', 'octubre' = '_oct', 'novembre' = '_nov',
+              'desembre' = '_dec', 'anual' = '_year',
+              
+              # var names
+              'radiacio' = 'rad', 'temperaturaminima' = 'tmin',
+              'temperaturamaxima' = 'tmax', 'temperaturamitjana' = 'tmean',
+              'precipitacio' = 'prec',
+              'etr_s_' = 'etr_s', 'etr_p_' = 'etr_p'
+            )
+          ))
+        } %>%
+        {
+          ## add the clim_ prefix
+          set_names(., glue::glue("clim_{names(.)}"))
+        } %>% 
+        ## columns order by climatic variable
+        select(
+          old_idparcela = clim_idparcela,
+          -starts_with('clim_coor'), starts_with('clim_prec'),
+          starts_with('clim_rad'), starts_with('clim_t'),
+          starts_with('clim_etp'), starts_with('clim_etr'), starts_with('clim_npp')
+        )
+    },
+    by = 'old_idparcela'
+  ) %>% 
+  right_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(!NFI_4, !NFI_3, NFI_2) %>%
+        select(plot_id, old_idparcela)
+    }
+  ) %>%
+  mutate(
+    # we need to convert to dttm the feat_sampling_start_date
+    feat_sampling_start_date = as.POSIXct(as.character(feat_sampling_start_date), format = '%Y'),
+    # we need to convert to cardinal points the topo_fdm_cardinal_X vars
+    topo_fdm_aspect_cardinal_8 = case_when(
+      topo_fdm_aspect_cardinal_8 == 0 ~ 'N',
+      topo_fdm_aspect_cardinal_8 == 45 ~ 'NE',
+      topo_fdm_aspect_cardinal_8 == 90 ~ 'E',
+      topo_fdm_aspect_cardinal_8 == 135 ~ 'SE',
+      topo_fdm_aspect_cardinal_8 == 180 ~ 'S',
+      topo_fdm_aspect_cardinal_8 == 225 ~ 'SW',
+      topo_fdm_aspect_cardinal_8 == 270 ~ 'W',
+      topo_fdm_aspect_cardinal_8 == 315 ~ 'NW'
+    ),
+    topo_fdm_aspect_cardinal_4 = case_when(
+      topo_fdm_aspect_cardinal_4 == 0 ~ 'N',
+      topo_fdm_aspect_cardinal_4 == 90 ~ 'E',
+      topo_fdm_aspect_cardinal_4 == 180 ~ 'S',
+      topo_fdm_aspect_cardinal_4 == 270 ~ 'W'
+    )
+  ) %>%
+  select(plot_id, everything()) -> ifn2_plot_topo_clim_vars
+
+topo_clim_info <- bind_rows(
+  ifn2_plot_topo_clim_vars, ifn3_plot_topo_clim_vars, ifn4_plot_topo_clim_vars
+) %>%
+  arrange(plot_id)
+
+## TODO Separate the dynamic data from the static data
+
+#### STEP 5 ####
 ## We need the ownership info, located in a shapefile. We load the shapefile and we apply
-## an over to the belonging of the plots to the variables present in the shapefile
+## an over to the belonging of the plots to the variables present in the shapefile.
+## This, we do it with all the plots, as the maps are the most recent ones
 
 ifn2_ifn3_ifn4_plots %>%
   select(longitude, latitude) %>% 
@@ -509,10 +769,10 @@ ifn2_ifn3_ifn4_plots %>%
   ) %>%
   bind_cols(
     ifn2_ifn3_ifn4_plots %>%
-      select(old_idparcela, old_idclasse_nfi4)
-  ) %>% 
+      select(plot_id)
+  ) %>%
   select(
-    old_idparcela, old_idclasse_nfi4,
+    plot_id,
     feat_forest_id = fo_codi,
     feat_forest_name = forest,
     feat_ownership_type = tip_prop,
@@ -527,8 +787,6 @@ ifn2_ifn3_ifn4_plots %>%
 
 ## We also need the updated administrative divisions info. For that, again we load the
 ## shapefiles from the administrative divs and use sp::over
-
-delegations_dic <- read_csv('comarcas_delegaciones.csv')
 
 ifn2_ifn3_ifn4_plots %>%
   select(longitude, latitude) %>% 
@@ -582,20 +840,87 @@ ifn2_ifn3_ifn4_plots %>%
         )
     }
   ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        )
+    }
+  ) %>% 
+  ## Add the enpes, pein and xn2000 belongings
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'enpe_2017',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        ) %>% 
+        select(nom_enpe = nom)
+    }
+  ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'pein_2017',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        ) %>% 
+        select(nom_pein = nom)
+    }
+  ) %>%
+  bind_cols(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        select(longitude, latitude) %>% 
+        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+        sp::over(
+          {
+            rgdal::readOGR('data_raw/shapefiles', 'xn2000_2017',
+                           GDAL1_integer64_policy = FALSE) %>%
+              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+          }
+        ) %>% 
+        select(nom_xn2000 = nom_n2)
+    }
+  ) %>%
   as_data_frame() %>%
   mutate_if(
     is.factor, as.character
   ) %>%
-  left_join(delegations_dic, by = c('NOMCOMAR' = 'comarca')) %>%
+  bind_cols(
+    ifn2_ifn3_ifn4_plots %>%
+      select(plot_id)
+  ) %>%
   select(
+    plot_id,
     admin_province = NOMPROV,
-    admin_delegation = delegacio,
+    admin_delegation = comarcas_d,
     admin_region = NOMCOMAR,
     admin_vegueria = NOMVEGUE,
     admin_municipality = NOMMUNI,
     admin_province_id = CODIPROV,
     admin_region_id = CODICOMAR,
-    admin_municipality_id = CODIMUNI
+    admin_municipality_id = CODIMUNI,
+    admin_natural_interest_area = nom_pein,
+    admin_special_protection_natural_area = nom_enpe,
+    admin_natura_network_2000 = nom_xn2000
   ) -> admin_info
 
 ## TODO Check this cases
@@ -605,12 +930,19 @@ admin_info %>% filter(admin_province == 'Lleida') %>% pull(admin_delegation) %>%
 admin_info %>% filter(admin_province == 'Tarragona') %>% pull(admin_delegation) %>% unique()
 admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona')
 
-# test join
-# ifn2_ifn3_ifn4_plots %>%
-#   left_join(
-#     ifn4_plot_topo_clim_vars, by = c('old_idparcela', 'old_idclasse_nfi4')
-#   ) -> test_all
 
+#### STEP 6 ####
+# Let's build the overall table, joining what we have to join based on NFI4 first, NFI3
+# later and for those left, NFI2.
+# But before, as the admin and ownership info are for all plots already, lets join that
+# first
+ifn2_ifn3_ifn4_plots %>%
+  left_join(admin_info, by = 'plot_id') %>%
+  left_join(ownership_info, by = 'plot_id') %>%
+  left_join(topo_clim_info, by = 'plot_id') -> PLOTS
+
+poolClose(oracle_db)
+poolClose(access4_db)
 
 
 
