@@ -939,10 +939,309 @@ admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona
 ifn2_ifn3_ifn4_plots %>%
   left_join(admin_info, by = 'plot_id') %>%
   left_join(ownership_info, by = 'plot_id') %>%
-  left_join(topo_clim_info, by = 'plot_id') -> PLOTS
+  # here we let join by all coincidental variables, not only by plot_id
+  left_join(topo_clim_info) %>%
+  # lets rename some variables to maintain the logic (coords_ prefix for coordinates...)
+  # and order the variables
+  select(
+    plot_id,
+    presence_NFI_2 = NFI_2,
+    presence_NFI_3 = NFI_3,
+    presence_NFI_4 = NFI_4,
+    coords_utm_x_ETRS89 = utm_x_ETRS89,
+    coords_utm_y_ETRS89 = utm_y_ETRS89,
+    coords_longitude = longitude,
+    coords_latitude = latitude,
+    starts_with('admin_'),
+    starts_with('topo_'),
+    starts_with('feat_'),
+    starts_with('clim_'),
+    starts_with('old_')
+  ) -> PLOTS
 
 ## TODO Recalculate ETR and ETP from Miramon maps
 
+
+#### STEP 7 ####
+# Now, we need to create the results tables, renaming the variables and standardizing
+# everything.
+
+## We are gonna need the new plot id for each nfi level
+plot_id_nfi_2 <- PLOTS %>%
+  filter(presence_NFI_2) %>%
+  select(plot_id, old_idparcela)
+
+plot_id_nfi_3 <- PLOTS %>%
+  filter(presence_NFI_3) %>%
+  select(plot_id, old_idparcela, old_idclasse_nfi3)
+
+plot_id_nfi_4 <- PLOTS %>%
+  filter(presence_NFI_4) %>%
+  select(plot_id, old_idparcela, old_idclasse_nfi4)
+
+## Results at plot level for each nfi level
+tbl(oracle_db, 'r_parcela_ifn2') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id, #everything()
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    basal_area_dec_dominant = caducesclerconifab,
+    density_dec_dominant = caducesclerconifdens,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    basal_area_species_dominant = especieab,
+    density_species_dominant = especiedens,
+    basal_area_simp_species_dominant = especiesimpleab,
+    density_simp_species_dominant = especiesimpledens,
+    basal_area_genus_dominant = genereab,
+    density_genus_dominant = generedens,
+    over_bark_volume_increment = iavc,
+    basal_area_dec_percentage = percabcaducesclerconif,
+    basal_area_species_percentage = percabespecie,
+    basal_area_simp_species_percentage = percabespeciesimple,
+    basal_area_genus_percentage = percabgenere,
+    basal_area_bc_percentage = percabplanifconif,
+    density_dec_percentage = percdenscaducesclerconif,
+    density_species_percentage = percdensespecie,
+    density_simp_species_percentage = percdensespeciesimple,
+    density_genus_percentage = percdensgenere,
+    density_bc_percentage = percdensplanifconif,
+    basal_area_bc_dominant = planifconifab,
+    density_bc_dominant = planifconifdens,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    fulewood_volume = vle,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> PLOT_NFI_2_RESULTS
+
+tbl(oracle_db, 'r_parcela_ifn3') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id, #everything()
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    basal_area_dec_dominant = caducesclerconifab,
+    density_dec_dominant = caducesclerconifdens,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    basal_area_species_dominant = especieab,
+    density_species_dominant = especiedens,
+    basal_area_simp_species_dominant = especiesimpleab,
+    density_simp_species_dominant = especiesimpledens,
+    basal_area_genus_dominant = genereab,
+    density_genus_dominant = generedens,
+    lai = iaf,
+    over_bark_volume_increment = iavc,
+    over_bark_volume_increment_creaf = iavc_creaf,
+    basal_area_dec_percentage = percabcaducesclerconif,
+    basal_area_species_percentage = percabespecie,
+    basal_area_simp_species_percentage = percabespeciesimple,
+    basal_area_genus_percentage = percabgenere,
+    basal_area_bc_percentage = percabplanifconif,
+    density_dec_percentage = percdenscaducesclerconif,
+    density_species_percentage = percdensespecie,
+    density_simp_species_percentage = percdensespeciesimple,
+    density_genus_percentage = percdensgenere,
+    density_bc_percentage = percdensplanifconif,
+    gross_leaf_production = ph,
+    basal_area_bc_dominant = planifconifab,
+    density_bc_dominant = planifconifdens,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    fulewood_volume = vle,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> PLOT_NFI_3_RESULTS
+
+tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
+  collect() %>%
+  ## change the var names to lower letters (not capital)
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id, #everything()
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    basal_area_dec_dominant = caducesclerconifab,
+    density_dec_dominant = caducesclerconifdens,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    basal_area_species_dominant = especieab,
+    density_species_dominant = especiedens,
+    # basal_area_simp_species_dominant = especiesimpleab,
+    # density_simp_species_dominant = especiesimpledens,
+    basal_area_genus_dominant = genereab,
+    density_genus_dominant = generedens,
+    lai = iaf,
+    # over_bark_volume_increment = iavc,
+    # over_bark_volume_increment_creaf = iavc_creaf,
+    basal_area_dec_percentage = percabcaducesclerconif,
+    basal_area_species_percentage = percabespecie,
+    # basal_area_simp_species_percentage = percabespeciesimple,
+    basal_area_genus_percentage = percabgenere,
+    basal_area_bc_percentage = percabplanifconif,
+    density_dec_percentage = percdensitatcaducesclerconif,
+    density_species_percentage = percdensitatespecie,
+    # density_simp_species_percentage = percdensitatespeciesimple,
+    density_genus_percentage = percdensitatgenere,
+    density_bc_percentage = percdensitatplanifconif,
+    # gross_leaf_production = ph,
+    basal_area_bc_dominant = planifconifab,
+    density_bc_dominant = planifconifdens,
+    canopy_cover = rc,
+    basal_area_forest_type = tipusboscab,
+    density_forest_type = tipusboscdens,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vcc_morts,
+    # fulewood_volume = vle,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vsc_morts
+  ) -> PLOT_NFI_4_RESULTS ## TODO add simplified species when the that table is available
+
+## Results at species level for each nfi level
+tbl(oracle_db, 'r_especie_ifn2_creaf') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id, #everything()
+    species_id = idespecieifn2,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    order_basal_area = ordreab,
+    order_density = ordredens,
+    basal_area_percentage = percab,
+    density_percentage = percdens,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    what_the_heel_is_this_dead = vcmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> SPECIES_NFI_2_RESULTS
+
+tbl(oracle_db, 'r_especie_ifn3_creaf') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id, #everything()
+    species_id = idespecie,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    order_basal_area = ordreab,
+    order_density = ordredens,
+    basal_area_percentage = percab,
+    density_percentage = percdens,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> SPECIES_NFI_3_RESULTS
+
+tbl(access4_db, 'ResultatEspecie_IFN4_CREAF_OLAP') %>%
+  collect() %>%
+  ## change the var names to lower letters (not capital)
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasseifn4' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id, #everything()
+    species_id = especie,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    dbh = dbh,
+    dbh_dead = dbhmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    order_basal_area = ordreab,
+    order_density = ordredens,
+    basal_area_percentage = percab,
+    density_percentage = percdensitat,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> SPECIES_NFI_4_RESULTS
+
+
+
+
+
+
+
+#### CLOSE POOLS ####
 poolClose(oracle_db)
 poolClose(access4_db)
 
