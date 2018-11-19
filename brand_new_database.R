@@ -2186,6 +2186,228 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     under_bark_volume_dead = vscmorts
   ) -> GENUS_NFI_4_DIAMCLASS_RESULTS
 
+## Results at dec level broken down by diameter classes for each nfi level
+tbl(oracle_db, 'r_cadesclconcd_ifn2_creaf') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id, #everything()
+    diamclass_id = idcd,
+    dec_id = idcaducesclerconif,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    what_the_hell_is_this = vc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    what_the_hell_is_this_dead = vcmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> DEC_NFI_2_DIAMCLASS_RESULTS
+
+tbl(oracle_db, 'r_cadesclconcd_ifn3_creaf') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id, #everything(),
+    diamclass_id = idcd,
+    dec_id = idcaducesclerconif,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> DEC_NFI_3_DIAMCLASS_RESULTS
+
+tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
+  # join the tesaurus with the specie-genus relation
+  left_join({
+    tbl(access4_db, 'TesaureEspecieIFN4') %>%
+      select(Especie, CaducEsclerConif) %>%
+      filter(row_number() %in% c(
+        1:156, 158:327, 330:337, 339:348, 350:352, 354:356, 358:359
+      ))
+  }) %>%
+  select(
+    # ordenar
+    IdParcela, IdClasseIFN4, IdCD, CaducEsclerConif, everything(),
+    # quitar las que no necesitamos o tenemos que recalcular
+    -Especie
+  ) %>%
+  # group by plot, class and genus
+  group_by(IdParcela, IdClasseIFN4, IdCD, CaducEsclerConif) %>%
+  # summarise all vars, by sum them
+  summarise_all(funs(sum(., na.rm = TRUE))) %>%
+  mutate(IdCD = as.character(IdCD)) %>%
+  select(
+    IdParcela, IdClasseIFN4, IdCD, CaducEsclerConif,
+    everything()
+  ) %>%
+  collect() %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  rename(
+    idclasse = idclasseifn4,
+    idcadesccon = caducesclerconif
+  ) %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id, #everything(),
+    classdiam_id = idcd,
+    dec_id = idcadesccon,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> DEC_NFI_4_DIAMCLASS_RESULTS
+
+## Results at bc level broken down by diameter classes for each nfi level
+tbl(oracle_db, 'r_planconcd_ifn2_creaf') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id, #everything()
+    diamclass_id = idcd,
+    bc_id = idplanifconif,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    what_the_hell_is_this = vc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    what_the_hell_is_this_dead = vcmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> BC_NFI_2_DIAMCLASS_RESULTS
+
+tbl(oracle_db, 'r_planconcd_ifn3_creaf') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id, #everything(),
+    diamclass_id = idcd,
+    bc_id = idplanifconif,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> BC_NFI_3_DIAMCLASS_RESULTS
+
+tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
+  # join the tesaurus with the specie-genus relation
+  left_join({
+    tbl(access4_db, 'TesaureEspecieIFN4') %>%
+      select(Especie, PlanifConif) %>%
+      filter(row_number() %in% c(
+        1:156, 158:327, 330:337, 339:348, 350:352, 354:356, 358:359
+      ))
+  }) %>%
+  select(
+    # ordenar
+    IdParcela, IdClasseIFN4, IdCD, PlanifConif, everything(),
+    # quitar las que no necesitamos o tenemos que recalcular
+    -Especie
+  ) %>%
+  # group by plot, class and genus
+  group_by(IdParcela, IdClasseIFN4, IdCD, PlanifConif) %>%
+  # summarise all vars, by sum them
+  summarise_all(funs(sum(., na.rm = TRUE))) %>%
+  mutate(IdCD = as.character(IdCD)) %>%
+  select(
+    IdParcela, IdClasseIFN4, IdCD, PlanifConif,
+    everything()
+  ) %>%
+  collect() %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  rename(
+    idclasse = idclasseifn4,
+    idplanifconif = planifconif
+  ) %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id, #everything(),
+    classdiam_id = idcd,
+    bc_id = idplanifconif,
+    basal_area = ab,
+    basal_area_dead = abmorts,
+    aerial_biomass_total = bat,
+    trunk_bark_biomass = bc,
+    leaf_biomass = bh,
+    trunk_wood_biomass = bm,
+    branch_wo_leaves_biomass = br,
+    aerial_carbon_total = cat,
+    trunk_bark_carbon = cc,
+    accumulated_aerial_co2 = cca,
+    leaf_carbon = ch,
+    trunk_wood_carbon = cm,
+    branch_wo_leaves_carbon = cr,
+    density = densitat,
+    density_dead = densitatmorts,
+    canopy_cover = rc,
+    over_bark_volume = vcc,
+    over_bark_volume_dead = vccmorts,
+    under_bark_volume = vsc,
+    under_bark_volume_dead = vscmorts
+  ) -> BC_NFI_4_DIAMCLASS_RESULTS
+
 
 #### CLOSE POOLS ####
 poolClose(oracle_db)
