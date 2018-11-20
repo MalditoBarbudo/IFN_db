@@ -28,7 +28,7 @@ access4_db <- dbPool(
   dbname = 'ifn4_access'
 )
 
-#### STEP 1 ####
+#### STEP 1 NFI2 and NFI3 plots ####
 # The most complete table is the parcela_ifn3 table from the oracle database.
 # It has all the IFN2 and IFN3 plots, but (and this is a big BUT) some of the
 # plots present in the IFN3 are different from those in IFN2, even though they
@@ -154,7 +154,7 @@ ifn2_ifn3_plots <- full_join(
     old_idclasse_nfi3 = idclasse
   )
 
-#### STEP 2 ####
+#### STEP 2 NFI4 plots added ####
 # Now we need to join the NFI4 plots. In this case only the A1 class from this inventory
 # can be in the NFI3 (even if in the NFI3 they have other class), the rest are new, even
 # if they have the same idparcela. But remember, the NFI2 and NFI3 A3C plots don't exist
@@ -230,7 +230,7 @@ ifn2_ifn3_ifn4_plots <- full_join(
     )
   )
 
-#### STEP 3 ####
+#### STEP 3 New id for the plots, and lotlang coordinates ####
 
 # We create an unique plot_id for each of the plots. This id will be P (from plot) and an
 # incremental number
@@ -287,7 +287,7 @@ ifn2_ifn3_ifn4_plots %<>%
     old_utm_y_nfi3 = utm_y_nfi3
   )
 
-#### STEP 4 ####
+#### STEP 4 Topo and climatic info ####
 # Let's start to add static info to the main table, starting from gis and climatic tables.
 # For this we must do some things:
 # 
@@ -719,7 +719,7 @@ topo_clim_info <- bind_rows(
 
 ## TODO Separate the dynamic data from the static data
 
-#### STEP 5 ####
+#### STEP 5 Admin and Ownership info ####
 ## We need the ownership info, located in a shapefile. We load the shapefile and we apply
 ## an over to the belonging of the plots to the variables present in the shapefile.
 ## This, we do it with all the plots, as the maps are the most recent ones
@@ -931,7 +931,7 @@ admin_info %>% filter(admin_province == 'Tarragona') %>% pull(admin_delegation) 
 admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona')
 
 
-#### STEP 6 ####
+#### STEP 6 PLOT general table ####
 # Let's build the overall table, joining what we have to join based on NFI4 first, NFI3
 # later and for those left, NFI2.
 # But before, as the admin and ownership info are for all plots already, lets join that
@@ -998,36 +998,36 @@ etr_dec_raster <- raster::raster('data_raw/mmm_geotiffs/ETR_K10 versión GeoTIF/
 PLOTS %<>%
   select(-starts_with('clim_etp_'), -starts_with('clim_etr_')) %>%
   mutate(
-    clim_etp_year = raster::extract(etp_year_raster, plots_sppoints_ed50),
-    clim_etp_jan = raster::extract(etp_jan_raster, plots_sppoints_ed50),
-    clim_etp_feb = raster::extract(etp_feb_raster, plots_sppoints_ed50),
-    clim_etp_mar = raster::extract(etp_mar_raster, plots_sppoints_ed50),
-    clim_etp_apr = raster::extract(etp_apr_raster, plots_sppoints_ed50),
-    clim_etp_may = raster::extract(etp_may_raster, plots_sppoints_ed50),
-    clim_etp_jun = raster::extract(etp_jun_raster, plots_sppoints_ed50),
-    clim_etp_jul = raster::extract(etp_jul_raster, plots_sppoints_ed50),
-    clim_etp_aug = raster::extract(etp_aug_raster, plots_sppoints_ed50),
-    clim_etp_sep = raster::extract(etp_sep_raster, plots_sppoints_ed50),
-    clim_etp_oct = raster::extract(etp_oct_raster, plots_sppoints_ed50),
-    clim_etp_nov = raster::extract(etp_nov_raster, plots_sppoints_ed50),
-    clim_etp_dec = raster::extract(etp_dec_raster, plots_sppoints_ed50),
-    clim_etr_year = raster::extract(etr_year_raster, plots_sppoints_ed50),
-    clim_etr_jan = raster::extract(etr_jan_raster, plots_sppoints_ed50),
-    clim_etr_feb = raster::extract(etr_feb_raster, plots_sppoints_ed50),
-    clim_etr_mar = raster::extract(etr_mar_raster, plots_sppoints_ed50),
-    clim_etr_apr = raster::extract(etr_apr_raster, plots_sppoints_ed50),
-    clim_etr_may = raster::extract(etr_may_raster, plots_sppoints_ed50),
-    clim_etr_jun = raster::extract(etr_jun_raster, plots_sppoints_ed50),
-    clim_etr_jul = raster::extract(etr_jul_raster, plots_sppoints_ed50),
-    clim_etr_aug = raster::extract(etr_aug_raster, plots_sppoints_ed50),
-    clim_etr_sep = raster::extract(etr_sep_raster, plots_sppoints_ed50),
-    clim_etr_oct = raster::extract(etr_oct_raster, plots_sppoints_ed50),
-    clim_etr_nov = raster::extract(etr_nov_raster, plots_sppoints_ed50),
-    clim_etr_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)
+    clim_pet_year = raster::extract(etp_year_raster, plots_sppoints_ed50),
+    clim_pet_jan = raster::extract(etp_jan_raster, plots_sppoints_ed50),
+    clim_pet_feb = raster::extract(etp_feb_raster, plots_sppoints_ed50),
+    clim_pet_mar = raster::extract(etp_mar_raster, plots_sppoints_ed50),
+    clim_pet_apr = raster::extract(etp_apr_raster, plots_sppoints_ed50),
+    clim_pet_may = raster::extract(etp_may_raster, plots_sppoints_ed50),
+    clim_pet_jun = raster::extract(etp_jun_raster, plots_sppoints_ed50),
+    clim_pet_jul = raster::extract(etp_jul_raster, plots_sppoints_ed50),
+    clim_pet_aug = raster::extract(etp_aug_raster, plots_sppoints_ed50),
+    clim_pet_sep = raster::extract(etp_sep_raster, plots_sppoints_ed50),
+    clim_pet_oct = raster::extract(etp_oct_raster, plots_sppoints_ed50),
+    clim_pet_nov = raster::extract(etp_nov_raster, plots_sppoints_ed50),
+    clim_pet_dec = raster::extract(etp_dec_raster, plots_sppoints_ed50),
+    clim_ret_year = raster::extract(etr_year_raster, plots_sppoints_ed50),
+    clim_ret_jan = raster::extract(etr_jan_raster, plots_sppoints_ed50),
+    clim_ret_feb = raster::extract(etr_feb_raster, plots_sppoints_ed50),
+    clim_ret_mar = raster::extract(etr_mar_raster, plots_sppoints_ed50),
+    clim_ret_apr = raster::extract(etr_apr_raster, plots_sppoints_ed50),
+    clim_ret_may = raster::extract(etr_may_raster, plots_sppoints_ed50),
+    clim_ret_jun = raster::extract(etr_jun_raster, plots_sppoints_ed50),
+    clim_ret_jul = raster::extract(etr_jul_raster, plots_sppoints_ed50),
+    clim_ret_aug = raster::extract(etr_aug_raster, plots_sppoints_ed50),
+    clim_ret_sep = raster::extract(etr_sep_raster, plots_sppoints_ed50),
+    clim_ret_oct = raster::extract(etr_oct_raster, plots_sppoints_ed50),
+    clim_ret_nov = raster::extract(etr_nov_raster, plots_sppoints_ed50),
+    clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)
   )
 
 
-#### STEP 7 ####
+#### STEP 7 Results tables ####
 # Now, we need to create the results tables, renaming the variables and standardizing
 # everything.
 
@@ -2472,6 +2472,13 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
+
+#### STEP 8 Thesauruses ####
+
+## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
+## their old names, the translations, the scenarios in which they are involved, their
+## type (chr, num...), their descriptions in each lenguage, their presence in the
+## different versions...
 
 
 #### CLOSE POOLS ####
