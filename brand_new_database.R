@@ -1221,9 +1221,15 @@ tbl(oracle_db, 'r_especie_ifn2_creaf') %>%
     canopy_cover = rc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_heel_is_this_dead = vcmorts,
+    what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_2_RESULTS
 
 tbl(oracle_db, 'r_especie_ifn3_creaf') %>%
@@ -1260,6 +1266,12 @@ tbl(oracle_db, 'r_especie_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_3_RESULTS
 
 tbl(access4_db, 'ResultatEspecie_IFN4_CREAF_OLAP') %>%
@@ -1298,6 +1310,12 @@ tbl(access4_db, 'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_4_RESULTS
 
 ## Results at simplified species level for each nfi level
@@ -1321,9 +1339,15 @@ tbl(oracle_db, 'r_espsimple_ifn2_creaf') %>%
     what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_heel_is_this_dead = vcmorts,
+    what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_2_RESULTS
 
 tbl(oracle_db, 'r_espsimple_ifn3_creaf') %>%
@@ -1360,6 +1384,12 @@ tbl(oracle_db, 'r_espsimple_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_3_RESULTS
 
 # for simplified species at nfi_4 level, we need to build the table as it does not exist
@@ -1410,6 +1440,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything()
     simpspecies_id = idespeciesimp,
@@ -1439,6 +1470,12 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_4_RESULTS
 
 ## Results at genus level for each nfi level
@@ -1462,9 +1499,15 @@ tbl(oracle_db, 'r_genere_ifn2_creaf') %>%
     what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_heel_is_this_dead = vcmorts,
+    what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_2_RESULTS
 
 tbl(oracle_db, 'r_genere_ifn3_creaf') %>%
@@ -1501,6 +1544,12 @@ tbl(oracle_db, 'r_genere_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_3_RESULTS
 
 # for genus at nfi_4 level, we need to build the table as it does not exist
@@ -1551,6 +1600,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything()
     genus_id = idgenere,
@@ -1580,6 +1630,12 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_4_RESULTS
 
 ## Results at broadleaf-conifer level for each nfi level
@@ -1603,9 +1659,15 @@ tbl(oracle_db, 'r_plancon_ifn2_creaf') %>%
     what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_heel_is_this_dead = vcmorts,
+    what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_2_RESULTS
 
 tbl(oracle_db, 'r_plancon_ifn3_creaf') %>%
@@ -1642,6 +1704,12 @@ tbl(oracle_db, 'r_plancon_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_3_RESULTS
 
 tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
@@ -1691,6 +1759,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything()
     bc_id = idplanifconif,
@@ -1720,6 +1789,12 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_RESULTS
 
 ## Results at deciduous-esclerophyl-conifer level for each nfi level
@@ -1743,9 +1818,15 @@ tbl(oracle_db, 'r_cadesclcon_ifn2_creaf') %>%
     what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_heel_is_this_dead = vcmorts,
+    what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_2_RESULTS
 
 tbl(oracle_db, 'r_cadesclcon_ifn3_creaf') %>%
@@ -1782,6 +1863,12 @@ tbl(oracle_db, 'r_cadesclcon_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_3_RESULTS
 
 tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
@@ -1831,6 +1918,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything()
     bc_id = idcadesccon,
@@ -1860,6 +1948,12 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    order_basal_area = order_basal_area * 1.0,
+    order_density = order_density * 1.0
+    # diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_4_RESULTS
 
 ## Results at plot level and broken down by diameter classes for each nfi level
@@ -1880,6 +1974,12 @@ tbl(oracle_db, 'r_cd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> PLOT_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_cd_ifn3_creaf') %>%
@@ -1910,6 +2010,12 @@ tbl(oracle_db, 'r_cd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> PLOT_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
@@ -1942,6 +2048,12 @@ tbl(access4_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> PLOT_NFI_4_DIAMCLASS_RESULTS ## TODO add simplified species when the that table is available
 
 ## Results at species level broken down by diameter classes for each nfi level
@@ -1963,6 +2075,12 @@ tbl(oracle_db, 'r_especiecd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_especiecd_ifn3_creaf') %>%
@@ -1994,6 +2112,12 @@ tbl(oracle_db, 'r_especiecd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db, 'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
@@ -2005,7 +2129,7 @@ tbl(access4_db, 'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   ) %>%
   select(
     plot_id, #everything(),
-    classdiam_id = idcd,
+    diamclass_id = idcd,
     species_id = especie,
     basal_area = ab,
     basal_area_dead = abmorts,
@@ -2027,6 +2151,12 @@ tbl(access4_db, 'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_NFI_4_DIAMCLASS_RESULTS
 
 ## Results at simplified species level broken down by diameter classes for each nfi level
@@ -2048,6 +2178,12 @@ tbl(oracle_db, 'r_espsimplecd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_espsimplecd_ifn3_creaf') %>%
@@ -2079,6 +2215,12 @@ tbl(oracle_db, 'r_espsimplecd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
@@ -2114,9 +2256,10 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything(),
-    classdiam_id = idcd,
+    diamclass_id = idcd,
     simpspecies_id = idespeciesimp,
     basal_area = ab,
     basal_area_dead = abmorts,
@@ -2138,6 +2281,12 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS
 
 ## Results at genus level broken down by diameter classes for each nfi level
@@ -2159,6 +2308,12 @@ tbl(oracle_db, 'r_generecd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_generecd_ifn3_creaf') %>%
@@ -2190,6 +2345,12 @@ tbl(oracle_db, 'r_generecd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
@@ -2225,9 +2386,10 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything(),
-    classdiam_id = idcd,
+    diamclass_id = idcd,
     genus_id = idgenere,
     basal_area = ab,
     basal_area_dead = abmorts,
@@ -2249,6 +2411,12 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> GENUS_NFI_4_DIAMCLASS_RESULTS
 
 ## Results at dec level broken down by diameter classes for each nfi level
@@ -2270,6 +2438,12 @@ tbl(oracle_db, 'r_cadesclconcd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_cadesclconcd_ifn3_creaf') %>%
@@ -2301,6 +2475,12 @@ tbl(oracle_db, 'r_cadesclconcd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
@@ -2336,9 +2516,10 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything(),
-    classdiam_id = idcd,
+    diamclass_id = idcd,
     dec_id = idcadesccon,
     basal_area = ab,
     basal_area_dead = abmorts,
@@ -2360,6 +2541,12 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> DEC_NFI_4_DIAMCLASS_RESULTS
 
 ## Results at bc level broken down by diameter classes for each nfi level
@@ -2381,6 +2568,12 @@ tbl(oracle_db, 'r_planconcd_ifn2_creaf') %>%
     what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_2_DIAMCLASS_RESULTS
 
 tbl(oracle_db, 'r_planconcd_ifn3_creaf') %>%
@@ -2412,6 +2605,12 @@ tbl(oracle_db, 'r_planconcd_ifn3_creaf') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_3_DIAMCLASS_RESULTS
 
 tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
@@ -2447,9 +2646,10 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ungroup() %>% 
   select(
     plot_id, #everything(),
-    classdiam_id = idcd,
+    diamclass_id = idcd,
     bc_id = idplanifconif,
     basal_area = ab,
     basal_area_dead = abmorts,
@@ -2471,6 +2671,12 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     over_bark_volume_dead = vccmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
+  ) %>%
+  # uniformize some variables in terms of class
+  mutate(
+    # order_basal_area = order_basal_area * 1.0,
+    # order_density = order_density * 1.0
+    diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
 #### STEP 8 Thesauruses ####
@@ -2480,6 +2686,293 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
 ## type (chr, num...), their descriptions in each lenguage, their presence in the
 ## different versions...
 
+# lets obtain the variable names (as var_id) and the class (as var_type) for each table
+# and join them all together, to remove the repeated ones later on
+
+PLOTS %>%
+  summarise_all(~class(.x)[1]) %>%
+  gather(var_id, var_type) %>%
+  bind_rows(
+    {
+      PLOT_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOT_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOT_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOT_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOT_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOT_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SPECIES_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      GENUS_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  
+  bind_rows(
+    {
+      BC_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      BC_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      BC_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      BC_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      BC_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      BC_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_2_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_2_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_3_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_3_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_4_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      DEC_NFI_4_DIAMCLASS_RESULTS %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  dplyr::distinct() -> vars_table 
+
+## TODO some is repeated, check it out
+
+
+
+vars_vector <- c(
+  names(PLOTS), names(PLOT_NFI_2_RESULTS), names(PLOT_NFI_2_DIAMCLASS_RESULTS),
+  names(PLOT_NFI_3_RESULTS), names(PLOT_NFI_3_DIAMCLASS_RESULTS),
+  names(PLOT_NFI_4_RESULTS), names(PLOT_NFI_4_DIAMCLASS_RESULTS),
+  names(SPECIES_NFI_2_RESULTS), names(SPECIES_NFI_2_DIAMCLASS_RESULTS),
+  names(SPECIES_NFI_3_RESULTS), names(SPECIES_NFI_3_DIAMCLASS_RESULTS),
+  names(SPECIES_NFI_4_RESULTS), names(SPECIES_NFI_4_DIAMCLASS_RESULTS),
+  names(SIMPSPECIES_NFI_2_RESULTS), names(SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS),
+  names(SIMPSPECIES_NFI_3_RESULTS), names(SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS),
+  names(SIMPSPECIES_NFI_4_RESULTS), names(SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS),
+  names(GENUS_NFI_2_RESULTS), names(GENUS_NFI_2_DIAMCLASS_RESULTS),
+  names(GENUS_NFI_3_RESULTS), names(GENUS_NFI_3_DIAMCLASS_RESULTS),
+  names(GENUS_NFI_4_RESULTS), names(GENUS_NFI_4_DIAMCLASS_RESULTS),
+  names(BC_NFI_2_RESULTS), names(BC_NFI_2_DIAMCLASS_RESULTS),
+  names(BC_NFI_3_RESULTS), names(BC_NFI_3_DIAMCLASS_RESULTS),
+  names(BC_NFI_4_RESULTS), names(BC_NFI_4_DIAMCLASS_RESULTS),
+  names(DEC_NFI_2_RESULTS), names(DEC_NFI_2_DIAMCLASS_RESULTS),
+  names(DEC_NFI_3_RESULTS), names(DEC_NFI_3_DIAMCLASS_RESULTS),
+  names(DEC_NFI_4_RESULTS), names(DEC_NFI_4_DIAMCLASS_RESULTS)
+) %>%
+  unique() %>%
+  sort()
 
 #### CLOSE POOLS ####
 poolClose(oracle_db)
