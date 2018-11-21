@@ -2679,7 +2679,7 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
-#### STEP 8 Thesauruses ####
+#### STEP 8 Variables thesauruses ####
 
 ## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
 ## their old names, the translations, the scenarios in which they are involved, their
@@ -3399,6 +3399,56 @@ logical_variables <- vars_table %>%
 dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
   select(var_id)
+
+#### STEP 9 Species/Genus... thesauruses ####
+
+# We need to create the species/genus/... thesauruses to be able to link the functional
+# groups to the old databases.
+# Probably we will need to create a new id for each functional group as they change
+# between NFI versions
+tbl(oracle_db, 'tesaureespecie') %>%
+  collect() %>% 
+  select(
+    code_id = idcodi,
+    species_id = idespecie,
+    simpspecies_id = idespeciesimple,
+    genus_id = idgenere,
+    dec_id = idcaducesclerconif,
+    bc_id = idplanifconif,
+    species_id_nfi2 = idespecieifn2
+  ) -> species_table_oracle
+
+# tbl(access4_db, 'TesaureEspecieIFN3') %>%
+#   collect() %>% 
+#   select(
+#     code_id = IdEspecieIFN3,
+#     species_id = Especie
+#   ) -> species_table_access_ifn3
+
+tbl(access4_db, 'TesaureEspecieIFN4') %>%
+  collect() %>% 
+  select(
+    code_id = IdEspecieIFN4,
+    species_id = Especie,
+    simpspecies_id = EspecieSimplificat,
+    genus_id = Genere,
+    dec_id = CaducEsclerConif,
+    bc_id = PlanifConif,
+    species_id_nfi2 = EspecieIFN2
+  ) -> species_table_access
+
+species_table_oracle %>%
+  # full_join(
+  #   species_table_access_ifn3, by = 'code_id', suffix = c('_oracle', '_accessIFN3')
+  # ) %>%
+  full_join(
+    species_table_access, by = 'code_id', suffix = c('_NFI2_3', '_NFI4')
+  ) -> species_table
+
+## TODO Check with Vayreda if this is ok
+
+#### STEP X Build the database ####
+
 
 #### CLOSE POOLS ####
 poolClose(oracle_db)
