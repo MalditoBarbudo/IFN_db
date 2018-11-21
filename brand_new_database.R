@@ -3448,11 +3448,45 @@ species_table_oracle %>%
 ## TODO Check with Vayreda if this is ok
 
 #### STEP X Build the database ####
+brand_new_nfi_db <- pool::dbPool(
+  RPostgreSQL::PostgreSQL(),
+  user = 'ifn',
+  password = rstudioapi::askForPassword('Password for ifn'),
+  dbname = 'brand_new_nfi_db'
+)
+
+PLOTS %>%
+  copy_to(
+    brand_new_nfi_db, ., name = 'PLOTS', overwrite = TRUE, temporary = FALSE
+  )
+db_create_index(
+  brand_new_nfi_db, 'PLOTS',
+  columns = c('plot_id'), name = 'plot_id',
+  unique = TRUE
+)
+
+PLOT_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, ., name = 'PLOT_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE
+  )
+# db_create_index(
+#   brand_new_nfi_db, 'PLOT_NFI_2_DIAMCLASS_RESULTS',
+#   columns = c('plot_id', 'diamclass_id'), name = 'pk_plot_nfi2_dc_res',
+#   unique = TRUE
+# )
+#set primary key
+pool::dbExecute(brand_new_nfi_db, 
+          'ALTER TABLE "PLOT_NFI_2_DIAMCLASS_RESULTS"
+           ADD PRIMARY KEY (plot_id, diamclass_id);'
+)
+
 
 
 #### CLOSE POOLS ####
 poolClose(oracle_db)
 poolClose(access4_db)
+poolClose(brand_new_nfi_db)
 
 
 
