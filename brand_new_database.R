@@ -30,6 +30,13 @@ access4_db <- dbPool(
   dbname = 'ifn4_access'
 )
 
+brand_new_nfi_db <- pool::dbPool(
+  RPostgreSQL::PostgreSQL(),
+  user = 'ifn',
+  password = rstudioapi::askForPassword('Password for ifn'),
+  dbname = 'tururu'
+)
+
 #### STEP 1 NFI2 and NFI3 plots ####
 # The most complete table is the parcela_ifn3 table from the oracle database.
 # It has all the IFN2 and IFN3 plots, but (and this is a big BUT) some of the
@@ -942,7 +949,10 @@ ifn2_ifn3_ifn4_plots %>%
   left_join(admin_info, by = 'plot_id') %>%
   left_join(ownership_info, by = 'plot_id') %>%
   # here we let join by all coincidental variables, not only by plot_id
-  left_join(topo_clim_info) %>%
+  left_join(topo_clim_info %>%
+              # we need to remove the old_idclasse_nfi3 and nfi4 as they are in the
+              # ifn2_ifn3_ifn4_plots and they create problems in the join
+              select(-old_idclasse_nfi3, -old_idclasse_nfi4)) %>%
   # lets rename some variables to maintain the logic (coords_ prefix for coordinates...)
   # and order the variables
   select(
@@ -1089,6 +1099,14 @@ tbl(oracle_db, 'r_parcela_ifn2') %>%
 
 tbl(oracle_db, 'r_parcela_ifn3') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1236,6 +1254,14 @@ tbl(oracle_db, 'r_especie_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_especie_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1354,6 +1380,14 @@ tbl(oracle_db, 'r_espsimple_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_espsimple_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1514,6 +1548,14 @@ tbl(oracle_db, 'r_genere_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_genere_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1674,6 +1716,14 @@ tbl(oracle_db, 'r_plancon_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_plancon_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1833,6 +1883,14 @@ tbl(oracle_db, 'r_cadesclcon_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_cadesclcon_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -1986,6 +2044,14 @@ tbl(oracle_db, 'r_cd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_cd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -2087,6 +2153,14 @@ tbl(oracle_db, 'r_especiecd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_especiecd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -2190,6 +2264,14 @@ tbl(oracle_db, 'r_espsimplecd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_espsimplecd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -2320,6 +2402,14 @@ tbl(oracle_db, 'r_generecd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_generecd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -2450,6 +2540,14 @@ tbl(oracle_db, 'r_cadesclconcd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_cadesclconcd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -2580,6 +2678,14 @@ tbl(oracle_db, 'r_planconcd_ifn2_creaf') %>%
 
 tbl(oracle_db, 'r_planconcd_ifn3_creaf') %>%
   collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -3450,12 +3556,6 @@ species_table_oracle %>%
 ## TODO Check with Vayreda if this is ok
 
 #### STEP X Build the database ####
-brand_new_nfi_db <- pool::dbPool(
-  RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
-  password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'tururu'
-)
 
 ## Plots static info
 PLOTS %>%
@@ -4072,9 +4172,3 @@ pool::dbExecute(
 poolClose(oracle_db)
 poolClose(access4_db)
 poolClose(brand_new_nfi_db)
-
-
-
-
-
-
