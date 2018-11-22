@@ -11,6 +11,8 @@ library(pool)
 library(magrittr)
 library(sp)
 library(rgdal)
+library(stringr)
+library(glue)
 # library(tidyIFN)
 
 # db connections
@@ -3452,36 +3454,619 @@ brand_new_nfi_db <- pool::dbPool(
   RPostgreSQL::PostgreSQL(),
   user = 'ifn',
   password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'brand_new_nfi_db'
+  dbname = 'tururu'
 )
 
+## Plots static info
 PLOTS %>%
   copy_to(
-    brand_new_nfi_db, ., name = 'PLOTS', overwrite = TRUE, temporary = FALSE
+    brand_new_nfi_db, df = ., name = 'PLOTS', overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
   )
-db_create_index(
-  brand_new_nfi_db, 'PLOTS',
-  columns = c('plot_id'), name = 'plot_id',
-  unique = TRUE
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOTS"
+   ADD PRIMARY KEY (plot_id);'
+)
+
+## Plot level results
+PLOT_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_2_RESULTS"
+   ADD PRIMARY KEY (plot_id);'
 )
 
 PLOT_NFI_2_DIAMCLASS_RESULTS %>%
   copy_to(
-    brand_new_nfi_db, ., name = 'PLOT_NFI_2_DIAMCLASS_RESULTS',
-    overwrite = TRUE, temporary = FALSE
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id')
+    )
   )
-# db_create_index(
-#   brand_new_nfi_db, 'PLOT_NFI_2_DIAMCLASS_RESULTS',
-#   columns = c('plot_id', 'diamclass_id'), name = 'pk_plot_nfi2_dc_res',
-#   unique = TRUE
-# )
-#set primary key
-pool::dbExecute(brand_new_nfi_db, 
-          'ALTER TABLE "PLOT_NFI_2_DIAMCLASS_RESULTS"
-           ADD PRIMARY KEY (plot_id, diamclass_id);'
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_2_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id);'
 )
 
+PLOT_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_3_RESULTS"
+   ADD PRIMARY KEY (plot_id);'
+)
 
+PLOT_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_3_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id);'
+)
+
+PLOT_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_4_RESULTS"
+   ADD PRIMARY KEY (plot_id);'
+)
+
+PLOT_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOT_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOT_NFI_4_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id);'
+)
+
+## Functional groups tables
+# Species
+SPECIES_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_2_RESULTS"
+   ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+SPECIES_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_2_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, species_id);'
+)
+
+SPECIES_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_3_RESULTS"
+   ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+SPECIES_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_3_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, species_id);'
+)
+
+SPECIES_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_4_RESULTS"
+   ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+SPECIES_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_NFI_4_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, species_id);'
+)
+
+# simplified species
+SIMPSPECIES_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_2_RESULTS"
+  ADD PRIMARY KEY (plot_id, simpspecies_id);'
+)
+
+SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS"
+  ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
+)
+
+SIMPSPECIES_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_3_RESULTS"
+  ADD PRIMARY KEY (plot_id, simpspecies_id);'
+)
+
+SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS"
+  ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
+)
+
+SIMPSPECIES_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_4_RESULTS"
+  ADD PRIMARY KEY (plot_id, simpspecies_id);'
+)
+
+SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS"
+  ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
+)
+
+# genus
+GENUS_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_2_RESULTS"
+   ADD PRIMARY KEY (plot_id, genus_id);'
+)
+
+GENUS_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_2_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, genus_id);'
+)
+
+GENUS_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_3_RESULTS"
+   ADD PRIMARY KEY (plot_id, genus_id);'
+)
+
+GENUS_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_3_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, genus_id);'
+)
+
+GENUS_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_4_RESULTS"
+   ADD PRIMARY KEY (plot_id, genus_id);'
+)
+
+GENUS_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'GENUS_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'genus_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "GENUS_NFI_4_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, genus_id);'
+)
+
+# dec
+DEC_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_2_RESULTS"
+   ADD PRIMARY KEY (plot_id, dec_id);'
+)
+
+DEC_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_2_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, dec_id);'
+)
+
+DEC_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_3_RESULTS"
+   ADD PRIMARY KEY (plot_id, dec_id);'
+)
+
+DEC_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_3_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, dec_id);'
+)
+
+DEC_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_4_RESULTS"
+   ADD PRIMARY KEY (plot_id, dec_id);'
+)
+
+DEC_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'DEC_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'dec_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "DEC_NFI_4_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, dec_id);'
+)
+
+# bc
+BC_NFI_2_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_2_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_2_RESULTS"
+   ADD PRIMARY KEY (plot_id, bc_id);'
+)
+
+BC_NFI_2_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_2_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_2_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, bc_id);'
+)
+
+BC_NFI_3_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_3_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_3_RESULTS"
+   ADD PRIMARY KEY (plot_id, bc_id);'
+)
+
+BC_NFI_3_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_3_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_3_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, bc_id);'
+)
+
+BC_NFI_4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_4_RESULTS"
+   ADD PRIMARY KEY (plot_id, bc_id);'
+)
+
+BC_NFI_4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'BC_NFI_4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'bc_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "BC_NFI_4_DIAMCLASS_RESULTS"
+   ADD PRIMARY KEY (plot_id, diamclass_id, bc_id);'
+)
+
+## Variables Thesaurus
+vars_table %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'VARIABLES_THESAURUS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'var_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "VARIABLES_THESAURUS"
+   ADD PRIMARY KEY (var_id);'
+)
+
+categorical_variables %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'VARIABLES_CATEGORICAL',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'var_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "VARIABLES_CATEGORICAL"
+   ADD PRIMARY KEY (var_id);'
+)
+
+numerical_variables %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'VARIABLES_NUMERICAL',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'var_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "VARIABLES_NUMERICAL"
+   ADD PRIMARY KEY (var_id);'
+)
+
+logical_variables %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'VARIABLES_LOGICAL',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'var_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "VARIABLES_LOGICAL"
+   ADD PRIMARY KEY (var_id);'
+)
+
+dttm_variables %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'VARIABLES_DTTM',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'var_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "VARIABLES_DTTM"
+   ADD PRIMARY KEY (var_id);'
+)
+
+## Species thesaurus
+species_table %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SPECIES_THESAURUS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'code_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SPECIES_THESAURUS"
+   ADD PRIMARY KEY (code_id);'
+)
 
 #### CLOSE POOLS ####
 poolClose(oracle_db)
