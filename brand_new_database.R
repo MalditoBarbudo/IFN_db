@@ -1434,6 +1434,15 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join({
     tbl(access4_db, 'TesaureEspecieIFN4') %>%
       select(Especie, EspecieSimplificat) %>%
+      # Rhamnus alaternus has not simplified species value (is NA), which will throw an
+      # error when using simpspecies_id as part of the primary key in the build database
+      # step. So we will put the species as simpspecies for this shrub/tree
+      mutate(
+        EspecieSimplificat = case_when(
+          Especie == 'Rhamnus alaternus' ~ 'Rhamnus alaternus',
+          TRUE ~ EspecieSimplificat
+        )
+      ) %>%
       filter(row_number() %in% c(
         1:156, 158:327, 330:337, 339:348, 350:352, 354:356, 358:359
       ))
@@ -1855,7 +1864,7 @@ tbl(oracle_db, 'r_cadesclcon_ifn2_creaf') %>%
   left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
   select(
     plot_id, #everything()
-    bc_id = idcaducesclerconif,
+    dec_id = idcaducesclerconif,
     basal_area = ab,
     basal_area_dead = abmorts,
     dbh = dbh,
@@ -1896,7 +1905,7 @@ tbl(oracle_db, 'r_cadesclcon_ifn3_creaf') %>%
   ) %>%
   select(
     plot_id, #everything()
-    bc_id = idcaducesclerconif,
+    dec_id = idcaducesclerconif,
     basal_area = ab,
     basal_area_dead = abmorts,
     aerial_biomass_total = bat,
@@ -1981,7 +1990,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   ungroup() %>% 
   select(
     plot_id, #everything()
-    bc_id = idcadesccon,
+    dec_id = idcadesccon,
     basal_area = ab,
     basal_area_dead = abmorts,
     aerial_biomass_total = bat,
@@ -2312,6 +2321,15 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join({
     tbl(access4_db, 'TesaureEspecieIFN4') %>%
       select(Especie, EspecieSimplificat) %>%
+      # Rhamnus alaternus has not simplified species value (is NA), which will throw an
+      # error when using simpspecies_id as part of the primary key in the build database
+      # step. So we will put the species as simpspecies for this shrub/tree
+      mutate(
+        EspecieSimplificat = case_when(
+          Especie == 'Rhamnus alaternus' ~ 'Rhamnus alaternus',
+          TRUE ~ EspecieSimplificat
+        )
+      ) %>%
       filter(row_number() %in% c(
         1:156, 158:327, 330:337, 339:348, 350:352, 354:356, 358:359
       ))
