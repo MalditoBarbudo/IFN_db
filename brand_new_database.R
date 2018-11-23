@@ -3754,6 +3754,38 @@ species_table_oracle %>%
 
 ## TODO Check with Vayreda if this is ok
 
+#### STEP 12 Regeneration tables ####
+# In this case, we do it after the thesauruses because we need the species tables as
+# the original tables have only the code (at least for 2 and 3 versions). Also, we have
+# the data for all plots in spain (at least for 2 and 3 versions) so we need to start
+# with the nfi version plots
+plot_id_nfi_2 %>%
+  left_join(
+    tbl(oracle_db, 'regeneracioifn2_espanya') %>% collect(),
+    by = c('old_idparcela' = 'idparcela')
+  ) %>%
+  # here we join the species table to get the species names
+  left_join(
+    species_table %>% select(code_id, species_id_NFI2_3),
+    by = c('idespecie' = 'code_id')
+  ) %>%
+  mutate(iddensitat = as.numeric(iddensitat)) %>%
+  # we need to conver the iddensitat var to its value
+  left_join(
+    tbl(access4_db, 'TesaureRegeneracio') %>% collect() %>% select(IdDensitat, Densitat),
+    by = c('iddensitat' = 'IdDensitat')
+  ) %>%
+  select(
+    plot_id,
+    species_id = species_id_NFI2_3,
+    density_class = Densitat,
+    tree_number = nombrepeus,
+    tree_mean_height = hm
+  ) -> REGENERATION_NFI_2
+## TODO Q. pyrenaica, seriously?????? Check with Vayreda about the species, and talk with
+## Raúl also.
+
+
 #### STEP X Build the database ####
 
 ## Plots static info
