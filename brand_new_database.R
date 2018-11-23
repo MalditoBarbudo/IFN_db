@@ -2805,7 +2805,150 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
-#### STEP 8 Variables thesauruses ####
+#### STEP 8 Tree tables ####
+# we need the forest_volume_measurement (cubicacio) thesaurus, as we need to convert the
+# fvm numeric value to the long character value
+
+tbl(oracle_db, 'arbreifn2_creaf') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id,
+    tree_id = idarbre,
+    diamclass_id = cd,
+    species_id = idespecieifn2,
+    tree_heading = rumb,
+    tree_distance = distancia,
+    tree_dbh = dn,
+    tree_height = ht,
+    tree_quality = qualitat,
+    forest_volume_measurement = formacubicacio,
+    tree_basal_area = g,
+    tree_canopy_diameter = dc,
+    tree_over_bark_volume = vcc,
+    tree_under_bark_volume = vsc,
+    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    tree_conversion_factor = factor
+  ) %>%
+  left_join(
+    tbl(oracle_db, 'tesaureformacubicacio') %>% collect() %>%
+      select(idforma, formacubicacio),
+    by = c('forest_volume_measurement' = 'idforma')
+  ) %>% 
+  mutate(
+    diamclass_id = as.character(diamclass_id),
+    forest_volume_measurement = formacubicacio
+  ) %>%
+  select(-formacubicacio) -> TREES_NFI_2_INFO
+
+tbl(oracle_db, 'arbreifn3_creaf') %>%
+  collect() %>%
+  collect() %>%
+  # there is a problem with plot 251955 as it is classified as A1 but there is no record
+  # for it in the NFI2. So we will transform it class to NN
+  mutate(
+    idclasse = case_when(
+      idparcela == '251955' ~ 'NN',
+      TRUE ~ idclasse
+    )
+  ) %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id,
+    tree_id = idarbre,
+    diamclass_id = cd,
+    species_id = idespecie,
+    # tree_heading = rumb,
+    # tree_distance = distancia,
+    tree_status = estatus,
+    tree_dbh = dn,
+    tree_height = ht,
+    tree_quality = qualitat,
+    forest_volume_measurement = formacubicacio,
+    tree_basal_area = g,
+    tree_canopy_diameter = dc,
+    tree_over_bark_volume = vcc,
+    tree_under_bark_volume = vsc,
+    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    tree_conversion_factor = factor,
+    tree_aerial_biomass_total = bat,
+    tree_trunk_bark_biomass = bc,
+    tree_leaf_biomass = bh,
+    tree_trunk_wood_biomass = bm,
+    tree_branch_wo_leaves_biomass = br,
+    tree_aerial_carbon_total = cat,
+    tree_trunk_bark_carbon = cc,
+    tree_accumulated_aerial_co2 = cca,
+    tree_leaf_carbon = ch,
+    tree_trunk_wood_carbon = cm,
+    tree_branch_wo_leaves_carbon = cr
+  ) %>%
+  left_join(
+    tbl(oracle_db, 'tesaureformacubicacio') %>% collect() %>%
+      select(idforma, formacubicacio),
+    by = c('forest_volume_measurement' = 'idforma')
+  ) %>% 
+  mutate(
+    diamclass_id = as.character(diamclass_id),
+    forest_volume_measurement = formacubicacio
+  ) %>%
+  select(-formacubicacio) -> TREES_NFI_3_INFO
+
+tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
+  collect() %>%
+  ## change the var names to lower letters (not capital)
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasseifn4' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id,
+    tree_id = idarbreifn4,
+    diamclass_id = cd,
+    species_id = especie,
+    # tree_heading = rumb,
+    # tree_distance = distancia,
+    tree_status = estatus,
+    tree_dbh = dn,
+    tree_height = ht,
+    tree_quality = qualitat,
+    forest_volume_measurement = idforma,
+    # tree_basal_area = g,
+    # tree_canopy_diameter = dc,
+    tree_over_bark_volume = vcc,
+    tree_under_bark_volume = vsc,
+    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    tree_conversion_factor = factor,
+    tree_aerial_biomass_total = bat,
+    tree_trunk_bark_biomass = bc,
+    tree_leaf_biomass = bh,
+    tree_trunk_wood_biomass = bm,
+    tree_branch_wo_leaves_biomass = br,
+    tree_aerial_carbon_total = cat,
+    tree_trunk_bark_carbon = cc,
+    tree_accumulated_aerial_co2 = cca,
+    tree_leaf_carbon = ch,
+    tree_trunk_wood_carbon = cm,
+    tree_branch_wo_leaves_carbon = cr,
+    tree_over_bark_volume_increment_creaf = iavc_creaf
+  ) %>%
+  mutate(
+    forest_volume_measurement = as.numeric(forest_volume_measurement)
+  ) %>% 
+  left_join(
+    tbl(oracle_db, 'tesaureformacubicacio') %>% collect() %>%
+      select(idforma, formacubicacio),
+    by = c('forest_volume_measurement' = 'idforma')
+  ) %>% 
+  mutate(
+    diamclass_id = as.character(diamclass_id),
+    forest_volume_measurement = formacubicacio
+  ) %>%
+  select(-formacubicacio) -> TREES_NFI_4_INFO
+
+#### STEP 9 Variables thesauruses ####
 
 ## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
 ## their old names, the translations, the scenarios in which they are involved, their
@@ -3526,7 +3669,7 @@ dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
   select(var_id)
 
-#### STEP 9 Species/Genus... thesauruses ####
+#### STEP 10 Species/Genus... thesauruses ####
 
 # We need to create the species/genus/... thesauruses to be able to link the functional
 # groups to the old databases.
