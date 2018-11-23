@@ -2937,6 +2937,7 @@ tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
   mutate(
     forest_volume_measurement = as.numeric(forest_volume_measurement)
   ) %>% 
+  ## TODO check if thesaurus for cubicacio in nfi4 does not really  exist
   left_join(
     tbl(oracle_db, 'tesaureformacubicacio') %>% collect() %>%
       select(idforma, formacubicacio),
@@ -2948,7 +2949,44 @@ tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
   ) %>%
   select(-formacubicacio) -> TREES_NFI_4_INFO
 
-#### STEP 9 Variables thesauruses ####
+#### STEP 9 Shrub tables ####
+tbl(oracle_db, 'especiematollarifn2') %>%
+  collect() %>%
+  left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
+  select(
+    plot_id,
+    species_id = idespecieifn2,
+    shrub_canopy_cover = fcc,
+    shrub_mean_height = hm
+  ) -> SHRUB_NFI_2_INFO
+
+tbl(oracle_db, 'especiematollarifn3') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id,
+    species_id = idespecie,
+    shrub_canopy_cover = fcc,
+    shrub_mean_height = hm
+  ) -> SHRUB_NFI_3_INFO
+
+tbl(access4_db, 'EspecieMatollarIFN4_OLAP') %>%
+  collect() %>%
+  ## change the var names to lower letters (not capital)
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  left_join(
+    plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id,
+    species_id = especie,
+    shrub_canopy_cover = fcc,
+    shrub_mean_height = hm
+  ) -> SHRUB_NFI_4_INFO
+
+#### STEP 10 Variables thesauruses ####
 
 ## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
 ## their old names, the translations, the scenarios in which they are involved, their
@@ -3669,7 +3707,7 @@ dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
   select(var_id)
 
-#### STEP 10 Species/Genus... thesauruses ####
+#### STEP 11 Species/Genus... thesauruses ####
 
 # We need to create the species/genus/... thesauruses to be able to link the functional
 # groups to the old databases.
