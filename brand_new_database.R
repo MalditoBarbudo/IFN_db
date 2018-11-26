@@ -2909,9 +2909,9 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
-#### STEP 8 Plot comparation tables ####
+#### STEP 8 Plot comparision tables ####
  
-#### STEP 9 Functioanl groups comparation tables ####
+#### STEP 9 Functional groups comparation tables ####
 
 #### STEP 10 Tree tables ####
 # we need the forest_volume_measurement (cubicacio) thesaurus, as we need to convert the
@@ -3107,6 +3107,27 @@ tbl(access4_db, 'EspecieMatollarIFN4_OLAP') %>%
 PLOTS %>%
   summarise_all(~class(.x)[1]) %>%
   gather(var_id, var_type) %>%
+  bind_rows(
+    {
+      PLOTS_NFI_2_DYNAMIC_INFO %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOTS_NFI_3_DYNAMIC_INFO %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
+  bind_rows(
+    {
+      PLOTS_NFI_4_DYNAMIC_INFO %>%
+        summarise_all(~class(.x)[1]) %>%
+        gather(var_id, var_type)
+    }
+  ) %>%
   bind_rows(
     {
       PLOT_NFI_2_RESULTS %>%
