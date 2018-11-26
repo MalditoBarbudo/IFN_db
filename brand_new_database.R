@@ -1020,7 +1020,7 @@ ifn2_ifn3_ifn4_plots %>%
   select(
     plot_id,
     admin_province = NOMPROV,
-    admin_delegation = comarcas_d,
+    # admin_delegation = comarcas_d,
     admin_region = NOMCOMAR,
     admin_vegueria = NOMVEGUE,
     admin_municipality = NOMMUNI,
@@ -1180,7 +1180,7 @@ tbl(oracle_db, 'r_parcela_ifn2') %>%
     density_simp_species_dominant = especiesimpledens,
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
-    over_bark_volume_increment = iavc,
+    #over_bark_volume_increment = iavc,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
     basal_area_simp_species_percentage = percabespeciesimple,
@@ -1196,7 +1196,7 @@ tbl(oracle_db, 'r_parcela_ifn2') %>%
     canopy_cover = rc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    fulewood_volume = vle,
+    #fuelwood_volume = vle,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) -> PLOT_NFI_2_RESULTS
@@ -1242,8 +1242,8 @@ tbl(oracle_db, 'r_parcela_ifn3') %>%
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
     lai = iaf,
-    over_bark_volume_increment = iavc,
-    over_bark_volume_increment_creaf = iavc_creaf,
+    #over_bark_volume_increment = iavc,
+    #over_bark_volume_increment_creaf = iavc_creaf,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
     basal_area_simp_species_percentage = percabespeciesimple,
@@ -1254,13 +1254,13 @@ tbl(oracle_db, 'r_parcela_ifn3') %>%
     density_simp_species_percentage = percdensespeciesimple,
     density_genus_percentage = percdensgenere,
     density_bc_percentage = percdensplanifconif,
-    gross_leaf_production = ph,
+    # gross_leaf_production = ph,
     basal_area_bc_dominant = planifconifab,
     density_bc_dominant = planifconifdens,
     canopy_cover = rc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    fulewood_volume = vle,
+    #fuelwood_volume = vle,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) -> PLOT_NFI_3_RESULTS
@@ -1300,8 +1300,8 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
     lai = iaf,
-    # over_bark_volume_increment = iavc,
-    # over_bark_volume_increment_creaf = iavc_creaf,
+    # #over_bark_volume_increment = iavc,
+    # #over_bark_volume_increment_creaf = iavc_creaf,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
     # basal_area_simp_species_percentage = percabespeciesimple,
@@ -1320,7 +1320,7 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     density_forest_type = tipusboscdens,
     over_bark_volume = vcc,
     over_bark_volume_dead = vcc_morts,
-    # fulewood_volume = vle,
+    # #fuelwood_volume = vle,
     under_bark_volume = vsc,
     under_bark_volume_dead = vsc_morts
   ) -> PLOT_NFI_4_RESULTS ## TODO add simplified species when the that table is available
@@ -1345,7 +1345,7 @@ tbl(oracle_db, 'r_especie_ifn2_creaf') %>%
     canopy_cover = rc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -1468,10 +1468,10 @@ tbl(oracle_db, 'r_espsimple_ifn2_creaf') %>%
     basal_area_percentage = percab,
     density_percentage = percdens,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -1645,10 +1645,10 @@ tbl(oracle_db, 'r_genere_ifn2_creaf') %>%
     basal_area_percentage = percab,
     density_percentage = percdens,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -1813,10 +1813,10 @@ tbl(oracle_db, 'r_plancon_ifn2_creaf') %>%
     basal_area_percentage = percab,
     density_percentage = percdens,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -1980,10 +1980,10 @@ tbl(oracle_db, 'r_cadesclcon_ifn2_creaf') %>%
     basal_area_percentage = percab,
     density_percentage = percdens,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2141,10 +2141,10 @@ tbl(oracle_db, 'r_cd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2250,10 +2250,10 @@ tbl(oracle_db, 'r_especiecd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2361,10 +2361,10 @@ tbl(oracle_db, 'r_espsimplecd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2508,10 +2508,10 @@ tbl(oracle_db, 'r_generecd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2646,10 +2646,10 @@ tbl(oracle_db, 'r_cadesclconcd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2784,10 +2784,10 @@ tbl(oracle_db, 'r_planconcd_ifn2_creaf') %>%
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
-    what_the_hell_is_this = vc,
+    #what_the_hell_is_this = vc,
     over_bark_volume = vcc,
     over_bark_volume_dead = vccmorts,
-    what_the_hell_is_this_dead = vcmorts,
+    #what_the_hell_is_this_dead = vcmorts,
     under_bark_volume = vsc,
     under_bark_volume_dead = vscmorts
   ) %>%
@@ -2935,7 +2935,7 @@ tbl(oracle_db, 'arbreifn2_creaf') %>%
     tree_canopy_diameter = dc,
     tree_over_bark_volume = vcc,
     tree_under_bark_volume = vsc,
-    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    #tree_what_the_hell_is_this = vc, ## TODO Repasar!!
     tree_conversion_factor = factor
   ) %>%
   left_join(
@@ -2979,7 +2979,7 @@ tbl(oracle_db, 'arbreifn3_creaf') %>%
     tree_canopy_diameter = dc,
     tree_over_bark_volume = vcc,
     tree_under_bark_volume = vsc,
-    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    # tree_what_the_hell_is_this = vc, ## TODO Repasar!!
     tree_conversion_factor = factor,
     tree_aerial_biomass_total = bat,
     tree_trunk_bark_biomass = bc,
@@ -3027,7 +3027,7 @@ tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
     # tree_canopy_diameter = dc,
     tree_over_bark_volume = vcc,
     tree_under_bark_volume = vsc,
-    tree_what_the_hell_is_this = vc, ## TODO Repasar!!
+    # tree_what_the_hell_is_this = vc, ## TODO Repasar!!
     tree_conversion_factor = factor,
     tree_aerial_biomass_total = bat,
     tree_trunk_bark_biomass = bc,
@@ -3040,7 +3040,7 @@ tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
     tree_leaf_carbon = ch,
     tree_trunk_wood_carbon = cm,
     tree_branch_wo_leaves_carbon = cr,
-    tree_over_bark_volume_increment_creaf = iavc_creaf
+    #tree_over_bark_volume_increment_creaf = iavc_creaf
   ) %>%
   mutate(
     forest_volume_measurement = as.numeric(forest_volume_measurement)
@@ -3503,7 +3503,7 @@ PLOTS %>%
       var_id == 'density_simp_species_dominant' ~ 'especiesimpledens',
       var_id == 'basal_area_genus_dominant' ~ 'genereab',
       var_id == 'density_genus_dominant' ~ 'generedens',
-      var_id == 'over_bark_volume_increment' ~ 'iavc',
+      # var_id == '#over_bark_volume_increment' ~ 'iavc',
       var_id == 'basal_area_dec_percentage' ~ 'percabcaducesclerconif',
       var_id == 'basal_area_species_percentage' ~ 'percabespecie',
       var_id == 'basal_area_simp_species_percentage' ~ 'percabespeciesimple',
@@ -3519,7 +3519,7 @@ PLOTS %>%
       var_id == 'canopy_cover' ~ 'rc',
       var_id == 'over_bark_volume' ~ 'vcc',
       var_id == 'over_bark_volume_dead' ~ 'vccmorts',
-      var_id == 'fuelwood_volume' ~ 'vle',
+      # var_id == 'fuelwood_volume' ~ 'vle',
       var_id == 'under_bark_volume' ~ 'vsc',
       var_id == 'under_bark_volume_dead' ~ 'vscmorts',
       
@@ -3549,8 +3549,8 @@ PLOTS %>%
       var_id == 'basal_area_genus_dominant' ~ 'genereab',
       var_id == 'density_genus_dominant' ~ 'generedens',
       var_id == 'lai' ~ 'iaf',
-      var_id == 'over_bark_volume_increment' ~ 'iavc',
-      var_id == 'over_bark_volume_increment_creaf' ~ 'iavc_creaf',
+      # var_id == '#over_bark_volume_increment' ~ 'iavc',
+      # var_id == '#over_bark_volume_increment_creaf' ~ 'iavc_creaf',
       var_id == 'basal_area_dec_percentage' ~ 'percabcaducesclerconif',
       var_id == 'basal_area_species_percentage' ~ 'percabespecie',
       var_id == 'basal_area_simp_species_percentage' ~ 'percabespeciesimple',
@@ -3561,13 +3561,13 @@ PLOTS %>%
       var_id == 'density_simp_species_percentage' ~ 'percdensespeciesimple',
       var_id == 'density_genus_percentage' ~ 'percdensgenere',
       var_id == 'density_bc_percentage' ~ 'percdensplanifconif',
-      var_id == 'gross_leaf_production' ~ 'ph',
+      # var_id == 'gross_leaf_production' ~ 'ph',
       var_id == 'basal_area_bc_dominant' ~ 'planifconifab',
       var_id == 'density_bc_dominant' ~ 'planifconifdens',
       var_id == 'canopy_cover' ~ 'rc',
       var_id == 'over_bark_volume' ~ 'vcc',
       var_id == 'over_bark_volume_dead' ~ 'vccmorts',
-      var_id == 'fulewood_volume' ~ 'vle',
+      # var_id == '#fuelwood_volume' ~ 'vle',
       var_id == 'under_bark_volume' ~ 'vsc',
       var_id == 'under_bark_volume_dead' ~ 'vscmorts',
       
