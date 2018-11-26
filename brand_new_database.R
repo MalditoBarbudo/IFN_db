@@ -353,7 +353,7 @@ tbl(access4_db, 'Parcela_MDT') %>%
           feat_plot_type = tipusparcela,
           feat_soil_use = ussol,
           feat_forest_cover = coberturabosc,
-          feat_forest_type = tipusbosc,
+          feat_forest_type_lvl3 = tipusbosc,
           feat_total_canopy_cover = fcctotal,
           feat_tree_canopy_cover = fccarbrada,
           feat_spatial_distribution = distribucioespacial,
@@ -482,7 +482,41 @@ tbl(access4_db, 'Parcela_MDT') %>%
   ) %>% 
   select(plot_id, everything(), -GruixMO) -> ifn4_plot_topo_clim_vars
 
-## TODO Separate the dynamic data from the static data
+ifn4_dynamic_plot_topo_clim_vars <- ifn4_plot_topo_clim_vars %>%
+  select(
+    plot_id,
+    contains('cutoff'),
+    contains('improvement'),
+    contains('erosio'),
+    feat_forest_cover,
+    contains('forest_type_lvl'),
+    contains('observation'),
+    feat_org_matter_thickness,
+    feat_plot_type,
+    contains('sampling'),
+    contains('pinpoint'),
+    contains('canopy_cover')
+  ) %>%
+  mutate(
+    feat_sampling_year = lubridate::year(feat_sampling_start_date)
+  )
+
+ifn4_plot_topo_clim_vars %<>%
+  select(
+    -contains('cutoff'),
+    -contains('improvement'),
+    -contains('erosio'),
+    -feat_forest_cover,
+    -contains('forest_type_lvl'),
+    -contains('observation'),
+    -feat_org_matter_thickness,
+    -feat_plot_type,
+    -contains('sampling'),
+    -contains('pinpoint'),
+    -contains('canopy_cover')
+  )
+
+## TODO Dates are not imported from access database :( They must to be done separately
 
 ## NFI3
 tbl(oracle_db, 'parcelaifn3') %>%
@@ -493,21 +527,22 @@ tbl(oracle_db, 'parcelaifn3') %>%
     old_idclasse_nfi3 = idclasse,
     feat_plot_type = tipusparcela,
     feat_soil_use = ussol,
-    feat_level_2 = nivell2, ## TODO Repasar
+    feat_forest_type_lvl_2 = nivell2,
     feat_forest_cover = fccnivell2,
+    feat_forest_type_lvl3 = nivell2_3,
     feat_total_canopy_cover = fcctotal,
     feat_tree_canopy_cover = fccarboria,
     feat_spatial_distribution = distribucioespacial,
     feat_specific_composition = composicioespecifica,
     feat_rocky = rocositat,
     feat_soil_texture = texturasol,
-    feat_org_matter_content = contingutmo,
-    feat_soil_ph_class = phsol,
-    feat_soil_ph_value = valorphsol,
+    # feat_org_matter_content = contingutmo,
+    # feat_soil_ph_class = phsol,
+    # feat_soil_ph_value = valorphsol,
     feat_soil_type_1 = tipussol1,
     feat_soil_type_2 = tipussol2,
     feat_erosion = erosio,
-    feat_soil_surface_ph = phsolsuperficie,
+    # feat_soil_surface_ph = phsolsuperficie,
     feat_combustion_model = idmodelcombustible,
     feat_org_matter_thickness = gruixmo,
     feat_cutoff_stock_type = talladaregeneracio,
@@ -614,7 +649,39 @@ tbl(oracle_db, 'parcelaifn3') %>%
   ) %>%
   select(plot_id, everything()) -> ifn3_plot_topo_clim_vars
 
-## TODO Separate the dynamic data from the static data
+ifn3_dynamic_plot_topo_clim_vars <- ifn3_plot_topo_clim_vars %>%
+  select(
+    plot_id,
+    contains('cutoff'),
+    contains('improvement'),
+    contains('erosio'),
+    feat_forest_cover,
+    contains('forest_type_lvl'),
+    contains('observation'),
+    feat_org_matter_thickness,
+    feat_plot_type,
+    contains('sampling'),
+    contains('pinpoint'),
+    contains('canopy_cover')
+  ) %>%
+  mutate(
+    feat_sampling_year = lubridate::year(feat_sampling_start_date)
+  )
+
+ifn3_plot_topo_clim_vars %<>%
+  select(
+    -contains('cutoff'),
+    -contains('improvement'),
+    -contains('erosio'),
+    -feat_forest_cover,
+    -contains('forest_type_lvl'),
+    -contains('observation'),
+    -feat_org_matter_thickness,
+    -feat_plot_type,
+    -contains('sampling'),
+    -contains('pinpoint'),
+    -contains('canopy_cover')
+  )
 
 ## NFI2
 tbl(oracle_db, 'parcelaifn2') %>%
@@ -623,7 +690,7 @@ tbl(oracle_db, 'parcelaifn2') %>%
   select(
     old_idparcela = idparcela,
     feat_soil_use = ussolcamp,
-    feat_canopy_cover_level_2 = classecobertura, ## TODO Repasar
+    #feat_canopy_cover_level_2 = classecobertura, ## No se añade
     feat_total_canopy_cover = fcccamp,
     feat_spatial_distribution = distribucioespacial,
     feat_specific_composition = composicioespecifica,
@@ -721,12 +788,45 @@ tbl(oracle_db, 'parcelaifn2') %>%
   ) %>%
   select(plot_id, everything()) -> ifn2_plot_topo_clim_vars
 
+ifn2_dynamic_plot_topo_clim_vars <- ifn2_plot_topo_clim_vars %>%
+  select(
+    plot_id,
+    contains('cutoff'),
+    contains('improvement'),
+    contains('erosio'),
+    # feat_forest_cover,
+    contains('forest_type_lvl'),
+    contains('observation'),
+    # feat_org_matter_thickness,
+    # feat_plot_type,
+    contains('sampling'),
+    contains('pinpoint'),
+    contains('canopy_cover')
+  ) %>%
+  mutate(
+    feat_sampling_year = lubridate::year(feat_sampling_start_date)
+  )
+
+ifn2_plot_topo_clim_vars %<>%
+  select(
+    -contains('cutoff'),
+    -contains('improvement'),
+    -contains('erosio'),
+    # -feat_forest_cover,
+    -contains('forest_type_lvl'),
+    -contains('observation'),
+    # -feat_org_matter_thickness,
+    # -feat_plot_type,
+    -contains('sampling'),
+    -contains('pinpoint'),
+    -contains('canopy_cover')
+  )
+
+
 topo_clim_info <- bind_rows(
   ifn2_plot_topo_clim_vars, ifn3_plot_topo_clim_vars, ifn4_plot_topo_clim_vars
 ) %>%
   arrange(plot_id)
-
-## TODO Separate the dynamic data from the static data
 
 #### STEP 5 Admin and Ownership info ####
 ## We need the ownership info, located in a shapefile. We load the shapefile and we apply
@@ -782,7 +882,7 @@ ifn2_ifn3_ifn4_plots %>%
   ) %>%
   select(
     plot_id,
-    feat_forest_id = fo_codi,
+    #feat_forest_id = fo_codi,
     feat_forest_name = forest,
     feat_ownership_type = tip_prop,
     feat_ownership_regime,
@@ -933,11 +1033,11 @@ ifn2_ifn3_ifn4_plots %>%
   ) -> admin_info
 
 ## TODO Check this cases
-admin_info %>% filter(admin_province == 'Barcelona') %>% pull(admin_delegation) %>% unique()
-admin_info %>% filter(admin_province == 'Girona') %>% pull(admin_delegation) %>% unique()
-admin_info %>% filter(admin_province == 'Lleida') %>% pull(admin_delegation) %>% unique()
-admin_info %>% filter(admin_province == 'Tarragona') %>% pull(admin_delegation) %>% unique()
-admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona')
+# admin_info %>% filter(admin_province == 'Barcelona') %>% pull(admin_delegation) %>% unique()
+# admin_info %>% filter(admin_province == 'Girona') %>% pull(admin_delegation) %>% unique()
+# admin_info %>% filter(admin_province == 'Lleida') %>% pull(admin_delegation) %>% unique()
+# admin_info %>% filter(admin_province == 'Tarragona') %>% pull(admin_delegation) %>% unique()
+# admin_info %>% filter(admin_province == 'Girona', admin_delegation == 'Barcelona')
 
 
 #### STEP 6 PLOT general table ####
@@ -971,7 +1071,6 @@ ifn2_ifn3_ifn4_plots %>%
     starts_with('old_')
   ) -> PLOTS
 
-## TODO Recalculate ETR and ETP from Miramon maps
 # Miramon maps are in ED50 projection, so we need to convert the coordinates that we
 # have from ETRS89 to ED50, load the raster images in the geotiff format (with the
 # raster::raster function) and extract the values at the coordinates (with the
@@ -1037,6 +1136,11 @@ PLOTS %<>%
     clim_ret_nov = raster::extract(etr_nov_raster, plots_sppoints_ed50),
     clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)
   )
+
+# dynamics PLOTS tables
+PLOTS_NFI_2_DYNAMIC_INFO <- ifn2_dynamic_plot_topo_clim_vars
+PLOTS_NFI_3_DYNAMIC_INFO <- ifn3_dynamic_plot_topo_clim_vars
+PLOTS_NFI_4_DYNAMIC_INFO <- ifn4_dynamic_plot_topo_clim_vars
 
 
 #### STEP 7 Results tables ####
@@ -2805,7 +2909,11 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     diamclass_id = as.character(diamclass_id)
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
-#### STEP 8 Tree tables ####
+#### STEP 8 Plot comparation tables ####
+ 
+#### STEP 9 Functioanl groups comparation tables ####
+
+#### STEP 10 Tree tables ####
 # we need the forest_volume_measurement (cubicacio) thesaurus, as we need to convert the
 # fvm numeric value to the long character value
 
@@ -2949,7 +3057,7 @@ tbl(access4_db, 'ArbreIFN4_CREAF_OLAP') %>%
   ) %>%
   select(-formacubicacio) -> TREES_NFI_4_INFO
 
-#### STEP 9 Shrub tables ####
+#### STEP 11 Shrub tables ####
 tbl(oracle_db, 'especiematollarifn2') %>%
   collect() %>%
   left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
@@ -2986,7 +3094,7 @@ tbl(access4_db, 'EspecieMatollarIFN4_OLAP') %>%
     shrub_mean_height = hm
   ) -> SHRUB_NFI_4_INFO
 
-#### STEP 10 Variables thesauruses ####
+#### STEP 12 Variables thesauruses ####
 
 ## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
 ## their old names, the translations, the scenarios in which they are involved, their
@@ -3273,7 +3381,7 @@ PLOTS %>%
       var_id == 'feat_plot_type' ~ 'tipusparcela',
       var_id == 'feat_soil_use' ~ 'ussol',
       var_id == 'feat_forest_cover' ~ 'coberturabosc',
-      var_id == 'feat_forest_type' ~ 'tipusbosc',
+      var_id == 'feat_forest_type_lvl3' ~ 'tipusbosc',
       var_id == 'feat_total_canopy_cover' ~ 'fcctotal',
       var_id == 'feat_tree_canopy_cover' ~ 'fccarbrada',
       var_id == 'feat_spatial_distribution' ~ 'distribucioespacial',
@@ -3306,7 +3414,7 @@ PLOTS %>%
       var_id == 'old_idclasse_nfi3' ~ 'idclasse',
       var_id == 'feat_plot_type' ~ 'tipusparcela',
       var_id == 'feat_soil_use' ~ 'ussol',
-      var_id == 'feat_level_2' ~ 'nivell2', ## TODO Repasar
+      var_id == 'feat_forest_type_lvl_2' ~ 'nivell2', ## TODO Repasar
       var_id == 'feat_forest_cover' ~ 'fccnivell2',
       var_id == 'feat_total_canopy_cover' ~ 'fcctotal',
       var_id == 'feat_tree_canopy_cover' ~ 'fccarboria',
@@ -3314,13 +3422,13 @@ PLOTS %>%
       var_id == 'feat_specific_composition' ~ 'composicioespecifica',
       var_id == 'feat_rocky' ~ 'rocositat',
       var_id == 'feat_soil_texture' ~ 'texturasol',
-      var_id == 'feat_org_matter_content' ~ 'contingutmo',
-      var_id == 'feat_soil_ph_class' ~ 'phsol',
-      var_id == 'feat_soil_ph_value' ~ 'valorphsol',
+      # var_id == 'feat_org_matter_content' ~ 'contingutmo',
+      # var_id ==  '#feat_soil_ph_class' ~ 'phsol',
+      # var_id == 'feat_soil_ph_value' ~ 'valorphsol',
       var_id == 'feat_soil_type_1' ~ 'tipussol1',
       var_id == 'feat_soil_type_2' ~ 'tipussol2',
       var_id == 'feat_erosion' ~ 'erosio',
-      var_id == 'feat_soil_surface_ph' ~ 'phsolsuperficie',
+      # var_id == 'feat_soil_surface_ph' ~ 'phsolsuperficie',
       var_id == 'feat_combustion_model' ~ 'idmodelcombustible',
       var_id == 'feat_org_matter_thickness' ~ 'gruixmo',
       var_id == 'feat_cutoff_stock_type' ~ 'talladaregeneracio',
@@ -3347,7 +3455,7 @@ PLOTS %>%
       
       var_id == 'old_idparcela' ~ 'idparcela',
       var_id == 'feat_soil_use' ~ 'ussolcamp',
-      var_id == 'feat_canopy_cover_level_2' ~ 'classecobertura', ## TODO Repasar
+      # var_id == 'feat_canopy_cover_level_2' ~ 'classecobertura', ## TODO Repasar
       var_id == 'feat_total_canopy_cover' ~ 'fcccamp',
       var_id == 'feat_spatial_distribution' ~ 'distribucioespacial',
       var_id == 'feat_specific_composition' ~ 'composicioespecifica',
@@ -3370,7 +3478,7 @@ PLOTS %>%
       var_id == 'topo_fdm_aspect_cardinal_8' ~ 'orientacio_c8',
       var_id == 'topo_fdm_aspect_cardinal_4' ~ 'orientacio_c4',
       
-      var_id == 'feat_forest_id' ~ 'fo_codi',
+      # var_id == 'feat_forest_id' ~ 'fo_codi',
       var_id == 'feat_forest_name' ~ 'forest',
       var_id == 'feat_ownership_type' ~ 'tip_prop',
       var_id == 'feat_ownership_regime' ~ NA_character_,
@@ -3411,7 +3519,7 @@ PLOTS %>%
       var_id == 'canopy_cover' ~ 'rc',
       var_id == 'over_bark_volume' ~ 'vcc',
       var_id == 'over_bark_volume_dead' ~ 'vccmorts',
-      var_id == 'fulewood_volume' ~ 'vle',
+      var_id == 'fuelwood_volume' ~ 'vle',
       var_id == 'under_bark_volume' ~ 'vsc',
       var_id == 'under_bark_volume_dead' ~ 'vscmorts',
       
@@ -3707,7 +3815,7 @@ dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
   select(var_id)
 
-#### STEP 11 Species/Genus... thesauruses ####
+#### STEP 13 Species/Genus... thesauruses ####
 
 # We need to create the species/genus/... thesauruses to be able to link the functional
 # groups to the old databases.
@@ -3753,8 +3861,9 @@ species_table_oracle %>%
   ) -> species_table
 
 ## TODO Check with Vayreda if this is ok
+## TODO The rest of the regeneration tables (nfi3 and nfi4) must be done
 
-#### STEP 12 Regeneration tables ####
+#### STEP 14 Regeneration tables ####
 # In this case, we do it after the thesauruses because we need the species tables as
 # the original tables have only the code (at least for 2 and 3 versions). Also, we have
 # the data for all plots in spain (at least for 2 and 3 versions) so we need to start
@@ -3799,6 +3908,46 @@ PLOTS %>%
 pool::dbExecute(
   brand_new_nfi_db,
   'ALTER TABLE "PLOTS"
+   ADD PRIMARY KEY (plot_id);'
+)
+
+## Plots dynamic info
+PLOTS_NFI_2_DYNAMIC_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOTS_NFI_2_DYNAMIC_INFO', overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOTS_NFI_2_DYNAMIC_INFO"
+   ADD PRIMARY KEY (plot_id);'
+)
+
+PLOTS_NFI_3_DYNAMIC_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOTS_NFI_3_DYNAMIC_INFO', overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOTS_NFI_3_DYNAMIC_INFO"
+   ADD PRIMARY KEY (plot_id);'
+)
+
+PLOTS_NFI_3_DYNAMIC_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'PLOTS_NFI_3_DYNAMIC_INFO', overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'plot_id'
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "PLOTS_NFI_3_DYNAMIC_INFO"
    ADD PRIMARY KEY (plot_id);'
 )
 
