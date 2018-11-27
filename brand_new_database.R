@@ -2910,8 +2910,71 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   ) -> BC_NFI_4_DIAMCLASS_RESULTS
 
 #### STEP 8 Plot comparision tables ####
- 
-#### STEP 9 Functional groups comparation tables ####
+tbl(oracle_db, 'r_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  select(
+    plot_id,
+    density_diss = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_diss = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_diss = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_diss = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_diss = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_diss = density_diss / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  )
+## TODO dynamics tables has not the info about all the plots in the system, giving problems here
+## check this out!!!!
+
+#### STEP 9 Functional groups comparision tables ####
 
 #### STEP 10 Tree tables ####
 # we need the forest_volume_measurement (cubicacio) thesaurus, as we need to convert the
