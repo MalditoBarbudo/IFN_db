@@ -675,7 +675,8 @@ ifn3_dynamic_plot_topo_clim_vars <- ifn3_all_plot_topo_clim_vars %>%
   ) %>%
   mutate(
     feat_sampling_year = lubridate::year(feat_sampling_start_date)
-  )
+  ) %>%
+  filter(old_idparcela != '251955')
 
 ifn3_plot_topo_clim_vars %<>%
   select(
@@ -5379,16 +5380,16 @@ pool::dbExecute(
    ADD PRIMARY KEY (plot_id);'
 )
 
-PLOTS_NFI_3_DYNAMIC_INFO %>%
+PLOTS_NFI_4_DYNAMIC_INFO %>%
   copy_to(
-    brand_new_nfi_db, df = ., name = 'PLOTS_NFI_3_DYNAMIC_INFO', overwrite = TRUE, temporary = FALSE,
+    brand_new_nfi_db, df = ., name = 'PLOTS_NFI_4_DYNAMIC_INFO', overwrite = TRUE, temporary = FALSE,
     indexes = list(
       'plot_id'
     )
   )
 pool::dbExecute(
   brand_new_nfi_db,
-  'ALTER TABLE "PLOTS_NFI_3_DYNAMIC_INFO"
+  'ALTER TABLE "PLOTS_NFI_4_DYNAMIC_INFO"
    ADD PRIMARY KEY (plot_id);'
 )
 
