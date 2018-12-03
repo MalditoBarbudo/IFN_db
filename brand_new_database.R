@@ -617,14 +617,6 @@ tbl(oracle_db, 'parcelaifn3') %>%
         )
     },
     by = c('old_idparcela', 'old_idclasse_nfi3')
-  ) %>% 
-  right_join(
-    {
-      ifn2_ifn3_ifn4_plots %>%
-        filter(!NFI_4, NFI_3) %>%
-        select(plot_id, old_idparcela, old_idclasse_nfi3)
-      
-    }
   ) %>%
   mutate(
    # we need to convert to cardinal points the topo_fdm_cardinal_X vars
@@ -646,10 +638,27 @@ tbl(oracle_db, 'parcelaifn3') %>%
     ),
     # feat_combustion_model must be character
     feat_combustion_model = as.character(feat_combustion_model)
+  ) %>% 
+  left_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(NFI_3) %>%
+        select(plot_id, old_idparcela, old_idclasse_nfi3)
+      
+    }
+  ) -> ifn3_all_plot_topo_clim_vars
+
+ifn3_all_plot_topo_clim_vars %>%
+  right_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(!NFI_4, NFI_3) %>%
+        select(plot_id, old_idparcela)
+    }
   ) %>%
   select(plot_id, everything()) -> ifn3_plot_topo_clim_vars
 
-ifn3_dynamic_plot_topo_clim_vars <- ifn3_plot_topo_clim_vars %>%
+ifn3_dynamic_plot_topo_clim_vars <- ifn3_all_plot_topo_clim_vars %>%
   select(
     plot_id,
     contains('cutoff'),
@@ -757,13 +766,6 @@ tbl(oracle_db, 'parcelaifn2') %>%
         )
     },
     by = 'old_idparcela'
-  ) %>% 
-  right_join(
-    {
-      ifn2_ifn3_ifn4_plots %>%
-        filter(!NFI_4, !NFI_3, NFI_2) %>%
-        select(plot_id, old_idparcela)
-    }
   ) %>%
   mutate(
     # we need to convert to dttm the feat_sampling_start_date
@@ -786,9 +788,24 @@ tbl(oracle_db, 'parcelaifn2') %>%
       topo_fdm_aspect_cardinal_4 == 270 ~ 'W'
     )
   ) %>%
+  left_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(NFI_2) %>%
+        select(plot_id, old_idparcela)
+    }
+  ) -> ifn2_all_plot_topo_clim_vars
+  
+  ifn2_all_plot_topo_clim_vars %>% right_join(
+    {
+      ifn2_ifn3_ifn4_plots %>%
+        filter(!NFI_4, !NFI_3, NFI_2) %>%
+        select(plot_id, old_idparcela)
+    }
+  ) %>%
   select(plot_id, everything()) -> ifn2_plot_topo_clim_vars
 
-ifn2_dynamic_plot_topo_clim_vars <- ifn2_plot_topo_clim_vars %>%
+ifn2_dynamic_plot_topo_clim_vars <- ifn2_all_plot_topo_clim_vars %>%
   select(
     plot_id,
     contains('cutoff'),
@@ -2912,33 +2929,37 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
 #### STEP 8 Plot comparision tables ####
 tbl(oracle_db, 'r_ifn3_ifn2_creaf') %>%
   collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
   left_join(
     plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
     by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
+  filter(!is.na(plot_id)) %>%
   select(
     plot_id,
-    density_diss = densitat_d,
+    density_rem = densitat_d,
     density_inc = densitat_i,
     density_dead = densitat_m,
     density_balance = densitat_balanç,
     density_growth = densitat_creixement,
-    basal_area_diss = ab_d,
+    basal_area_rem = ab_d,
     basal_area_inc = ab_i,
     basal_area_dead = ab_m,
     basal_area_balance = ab_balanç,
     basal_area_growth = ab_creixement,
-    volume_over_bark_diss = vcc_d,
+    volume_over_bark_rem = vcc_d,
     volume_over_bark_inc = vcc_i,
     volume_over_bark_dead = vcc_m,
     volume_over_bark_balance = vcc_balanç,
     volume_over_bark_growth = vcc_creixement,
-    volume_under_bark_diss = vsc_d,
+    volume_under_bark_rem = vsc_d,
     volume_under_bark_inc = vsc_i,
     volume_under_bark_dead = vsc_m,
     volume_under_bark_balance = vsc_balanç,
     volume_under_bark_growth = vsc_creixement,
-    dbh_diss = dbh_d,
+    dbh_rem = dbh_d,
     dbh_inc = dbh_i,
     dbh_dead = dbh_m,
     dbh_balance = dbh_balanç
@@ -2955,26 +2976,699 @@ tbl(oracle_db, 'r_ifn3_ifn2_creaf') %>%
   ) %>%
   mutate(
     years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> PLOT_COMP_NFI2_NFI3_RESULTS
+
+tbl(access4_db, 'Resultat_IFN4_IFN3_CREAF_OLAP') %>%
+  collect() %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  filter(idclasseifn4 == 'A1') %>%
+  left_join(
+    plot_id_nfi_4 %>% select(old_idparcela, old_idclasse_nfi4, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasseifn4' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id,
+    density_diss = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_har = densitat_a,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_diss = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_har = ab_a,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_diss = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_har = vcc_a,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_diss = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_har = vsc_a,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_diss = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_har = dbh_a,
+    dbh_balance = dbh_balanç,
+    dbh_growth = dbh_creixement
+  ) %>%
+  mutate(
+    density_rem = density_har + density_diss,
+    basal_area_rem = basal_area_har + basal_area_diss,
+    volume_over_bark_rem = volume_over_bark_har + volume_over_bark_diss,
+    volume_under_bark_rem = volume_under_bark_har + volume_under_bark_diss,
+    dbh_rem = dbh_har + dbh_diss
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_4_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi3', '_nfi4')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi4 - feat_sampling_year_nfi3,
     density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
     dbh_inc = dbh_inc / years_diff,
     dbh_dead = dbh_dead / years_diff
-  )
-## TODO dynamics tables has not the info about all the plots in the system, giving problems here
-## check this out!!!!
+  ) -> PLOT_COMP_NFI3_NFI4_RESULTS
 
 #### STEP 9 Functional groups comparision tables ####
+
+## species
+tbl(oracle_db, 'r_especie_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  filter(!is.na(plot_id)) %>%
+  select(
+    plot_id,
+    species_id = idespecie,
+    density_rem = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_rem = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_rem = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_rem = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_rem = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> SPECIES_COMP_NFI2_NFI3_RESULTS
+
+tbl(access4_db, 'ResultatEspecie_IFN4_IFN3_CREAF_OLAP') %>%
+  collect() %>%
+  {magrittr::set_names(., tolower(names(.)))} %>%
+  filter(idclasseifn4 == 'A1') %>%
+  left_join(
+    plot_id_nfi_4 %>% select(old_idparcela, old_idclasse_nfi4, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasseifn4' = 'old_idclasse_nfi4')
+  ) %>%
+  select(
+    plot_id,
+    species_id = especie,
+    density_diss = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_har = densitat_a,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_diss = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_har = ab_a,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_diss = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_har = vcc_a,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_diss = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_har = vsc_a,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_diss = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_har = dbh_a,
+    dbh_balance = dbh_balanç,
+    dbh_growth = dbh_creixement
+  ) %>%
+  mutate(
+    density_rem = density_har + density_diss,
+    basal_area_rem = basal_area_har + basal_area_diss,
+    volume_over_bark_rem = volume_over_bark_har + volume_over_bark_diss,
+    volume_under_bark_rem = volume_under_bark_har + volume_under_bark_diss,
+    dbh_rem = dbh_har + dbh_diss
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_4_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi3', '_nfi4')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi4 - feat_sampling_year_nfi3
+  ) -> norate_species_comp_nfi3_nfi4_results
+# we need the norate_*_results beacuse the calculation of other functional groups must be
+# done in the raw data not in the rate data
+
+norate_species_comp_nfi3_nfi4_results %>%
+  mutate(
+    density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> SPECIES_COMP_NFI3_NFI4_RESULTS
+
+## simplified species
+tbl(oracle_db, 'r_espsimple_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  filter(!is.na(plot_id)) %>%
+  select(
+    plot_id,
+    simpspecies_id = idespeciesimple,
+    density_rem = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_rem = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_rem = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_rem = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_rem = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> SIMPSPECIES_COMP_NFI2_NFI3_RESULTS
+
+# simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
+# the species table, as they are not present in the original database
+norate_species_comp_nfi3_nfi4_results %>%
+  left_join(
+    species_table %>% select(species_id_NFI4, simpspecies_id_NFI4),
+    by = c('species_id' = 'species_id_NFI4')
+  ) %>%
+  select(plot_id, simpspecies_id = simpspecies_id_NFI4, everything(), -species_id) %>%
+  group_by(plot_id, simpspecies_id) %>%
+  summarise_if(is.numeric, .funs = funs(sum(., na.rm = TRUE))) %>%
+  # rebuild years_diff and related vars, which had been summed up the same as the other
+  # variables
+  select(-years_diff, -feat_sampling_year_nfi3, -feat_sampling_year_nfi4) %>%
+  left_join(
+    PLOT_COMP_NFI3_NFI4_RESULTS %>%
+      select(plot_id, feat_sampling_year_nfi3, feat_sampling_year_nfi4, years_diff),
+    by = 'plot_id'
+  ) %>%
+  mutate(
+    density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> SIMPSPECIES_COMP_NFI3_NFI4_RESULTS
+
+## genus
+tbl(oracle_db, 'r_genere_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  filter(!is.na(plot_id)) %>%
+  select(
+    plot_id,
+    genus_id = idgenere,
+    density_rem = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_rem = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_rem = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_rem = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_rem = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> GENUS_COMP_NFI2_NFI3_RESULTS
+
+# simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
+# the species table, as they are not present in the original database
+norate_species_comp_nfi3_nfi4_results %>%
+  left_join(
+    species_table %>% select(species_id_NFI4, genus_id_NFI4),
+    by = c('species_id' = 'species_id_NFI4')
+  ) %>%
+  select(plot_id, genus_id = genus_id_NFI4, everything(), -species_id) %>%
+  group_by(plot_id, genus_id) %>%
+  summarise_if(is.numeric, .funs = funs(sum(., na.rm = TRUE))) %>%
+  # rebuild years_diff and related vars, which had been summed up the same as the other
+  # variables
+  select(-years_diff, -feat_sampling_year_nfi3, -feat_sampling_year_nfi4) %>%
+  left_join(
+    PLOT_COMP_NFI3_NFI4_RESULTS %>%
+      select(plot_id, feat_sampling_year_nfi3, feat_sampling_year_nfi4, years_diff),
+    by = 'plot_id'
+  ) %>%
+  mutate(
+    density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> GENUS_COMP_NFI3_NFI4_RESULTS
+
+## dec
+tbl(oracle_db, 'r_cadesclcon_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  filter(!is.na(plot_id)) %>%
+  select(
+    plot_id,
+    dec_id = idcaducesclerconif,
+    density_rem = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_rem = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_rem = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_rem = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_rem = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> DEC_COMP_NFI2_NFI3_RESULTS
+
+# simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
+# the species table, as they are not present in the original database
+norate_species_comp_nfi3_nfi4_results %>%
+  left_join(
+    species_table %>% select(species_id_NFI4, dec_id_NFI4),
+    by = c('species_id' = 'species_id_NFI4')
+  ) %>%
+  select(plot_id, dec_id = dec_id_NFI4, everything(), -species_id) %>%
+  group_by(plot_id, dec_id) %>%
+  summarise_if(is.numeric, .funs = funs(sum(., na.rm = TRUE))) %>%
+  # rebuild years_diff and related vars, which had been summed up the same as the other
+  # variables
+  select(-years_diff, -feat_sampling_year_nfi3, -feat_sampling_year_nfi4) %>%
+  left_join(
+    PLOT_COMP_NFI3_NFI4_RESULTS %>%
+      select(plot_id, feat_sampling_year_nfi3, feat_sampling_year_nfi4, years_diff),
+    by = 'plot_id'
+  ) %>%
+  mutate(
+    density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> DEC_COMP_NFI3_NFI4_RESULTS
+
+## bc
+tbl(oracle_db, 'r_plancon_ifn3_ifn2_creaf') %>%
+  collect() %>%
+  # we remove the a4c and a6c plots as they have no data for ifn2 comparable at tree level
+  # (the origin of the comparisions)
+  filter(!idclasse %in% c('A4C', 'A6C')) %>%
+  left_join(
+    plot_id_nfi_3 %>% select(old_idparcela, old_idclasse_nfi3, plot_id),
+    by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
+  ) %>%
+  filter(!is.na(plot_id)) %>%
+  select(
+    plot_id,
+    bc_id = idplanifconif,
+    density_rem = densitat_d,
+    density_inc = densitat_i,
+    density_dead = densitat_m,
+    density_balance = densitat_balanç,
+    density_growth = densitat_creixement,
+    basal_area_rem = ab_d,
+    basal_area_inc = ab_i,
+    basal_area_dead = ab_m,
+    basal_area_balance = ab_balanç,
+    basal_area_growth = ab_creixement,
+    volume_over_bark_rem = vcc_d,
+    volume_over_bark_inc = vcc_i,
+    volume_over_bark_dead = vcc_m,
+    volume_over_bark_balance = vcc_balanç,
+    volume_over_bark_growth = vcc_creixement,
+    volume_under_bark_rem = vsc_d,
+    volume_under_bark_inc = vsc_i,
+    volume_under_bark_dead = vsc_m,
+    volume_under_bark_balance = vsc_balanç,
+    volume_under_bark_growth = vsc_creixement,
+    dbh_rem = dbh_d,
+    dbh_inc = dbh_i,
+    dbh_dead = dbh_m,
+    dbh_balance = dbh_balanç
+  ) %>%
+  # for the _d, _a, _i and _m vars we need to divide by the years between samplings to
+  # express the vars as a rate. We get the years from the dynamic info tables,
+  # substracting the nfi2 start year from nfi3 start year
+  left_join(
+    PLOTS_NFI_2_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
+    suffix = c('_nfi2', '_nfi3')
+  ) %>%
+  mutate(
+    years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> BC_COMP_NFI2_NFI3_RESULTS
+
+# simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
+# the species table, as they are not present in the original database
+norate_species_comp_nfi3_nfi4_results %>%
+  left_join(
+    species_table %>% select(species_id_NFI4, bc_id_NFI4),
+    by = c('species_id' = 'species_id_NFI4')
+  ) %>%
+  select(plot_id, bc_id = bc_id_NFI4, everything(), -species_id) %>%
+  group_by(plot_id, bc_id) %>%
+  summarise_if(is.numeric, .funs = funs(sum(., na.rm = TRUE))) %>%
+  # rebuild years_diff and related vars, which had been summed up the same as the other
+  # variables
+  select(-years_diff, -feat_sampling_year_nfi3, -feat_sampling_year_nfi4) %>%
+  left_join(
+    PLOT_COMP_NFI3_NFI4_RESULTS %>%
+      select(plot_id, feat_sampling_year_nfi3, feat_sampling_year_nfi4, years_diff),
+    by = 'plot_id'
+  ) %>%
+  mutate(
+    density_diss = density_diss / years_diff,
+    density_rem = density_rem / years_diff,
+    density_inc = density_inc / years_diff,
+    density_dead = density_dead / years_diff,
+    basal_area_diss = basal_area_diss / years_diff,
+    basal_area_rem = basal_area_rem / years_diff,
+    basal_area_inc = basal_area_inc / years_diff,
+    basal_area_dead = basal_area_dead / years_diff,
+    volume_over_bark_diss = volume_over_bark_diss / years_diff,
+    volume_over_bark_rem = volume_over_bark_rem / years_diff,
+    volume_over_bark_inc = volume_over_bark_inc / years_diff,
+    volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_under_bark_diss = volume_under_bark_diss / years_diff,
+    volume_under_bark_rem = volume_under_bark_rem / years_diff,
+    volume_under_bark_inc = volume_under_bark_inc / years_diff,
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    dbh_diss = dbh_diss / years_diff,
+    dbh_rem = dbh_rem / years_diff,
+    dbh_inc = dbh_inc / years_diff,
+    dbh_dead = dbh_dead / years_diff
+  ) -> BC_COMP_NFI3_NFI4_RESULTS
 
 #### STEP 10 Tree tables ####
 # we need the forest_volume_measurement (cubicacio) thesaurus, as we need to convert the
