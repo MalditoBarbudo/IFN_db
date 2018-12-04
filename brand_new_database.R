@@ -659,6 +659,7 @@ ifn3_all_plot_topo_clim_vars %>%
   select(plot_id, everything()) -> ifn3_plot_topo_clim_vars
 
 ifn3_dynamic_plot_topo_clim_vars <- ifn3_all_plot_topo_clim_vars %>%
+  filter(old_idparcela != '251955') %>%
   select(
     plot_id,
     contains('cutoff'),
@@ -675,8 +676,7 @@ ifn3_dynamic_plot_topo_clim_vars <- ifn3_all_plot_topo_clim_vars %>%
   ) %>%
   mutate(
     feat_sampling_year = lubridate::year(feat_sampling_start_date)
-  ) %>%
-  filter(old_idparcela != '251955')
+  )
 
 ifn3_plot_topo_clim_vars %<>%
   select(
@@ -3105,22 +3105,27 @@ tbl(access4_db, 'Resultat_IFN4_IFN3_CREAF_OLAP') %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff,
     dbh_diss = dbh_diss / years_diff,
     dbh_rem = dbh_rem / years_diff,
     dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    dbh_dead = dbh_dead / years_diff,
+    dbh_har = dbh_har / years_diff
   ) -> PLOT_COMP_NFI3_NFI4_RESULTS
 
 # diameter classes
@@ -3249,18 +3254,22 @@ tbl(access4_db, 'ResultatCD_IFN4_IFN3_CREAF_OLAP') %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### STEP 9 Functional groups comparision tables ####
@@ -3465,22 +3474,27 @@ norate_species_comp_nfi3_nfi4_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff,
     dbh_diss = dbh_diss / years_diff,
     dbh_rem = dbh_rem / years_diff,
     dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    dbh_dead = dbh_dead / years_diff,
+    dbh_har = dbh_har / years_diff
   ) -> SPECIES_COMP_NFI3_NFI4_RESULTS
 
 tbl(access4_db, 'ResultatEspecieCD_IFN4_IFN3_CREAF_OLAP') %>%
@@ -3548,18 +3562,22 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 ## simplified species
@@ -3714,22 +3732,30 @@ norate_species_comp_nfi3_nfi4_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    dbh_diss = dbh_diss / years_diff,
-    dbh_rem = dbh_rem / years_diff,
-    dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    # dbh must be recalculated as it is not the sum
+    dbh_diss = sqrt((basal_area_diss*40000)/(pi*density_diss)),
+    dbh_inc = sqrt((basal_area_inc*40000)/(pi*density_inc)),
+    dbh_dead = sqrt((basal_area_dead*40000)/(pi*density_dead)),
+    dbh_har = sqrt((basal_area_har*40000)/(pi*density_har)),
+    dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
+    dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
+    dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
   ) -> SIMPSPECIES_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
@@ -3753,18 +3779,22 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 ## genus
@@ -3919,22 +3949,30 @@ norate_species_comp_nfi3_nfi4_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    dbh_diss = dbh_diss / years_diff,
-    dbh_rem = dbh_rem / years_diff,
-    dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    # dbh must be recalculated as it is not the sum
+    dbh_diss = sqrt((basal_area_diss*40000)/(pi*density_diss)),
+    dbh_inc = sqrt((basal_area_inc*40000)/(pi*density_inc)),
+    dbh_dead = sqrt((basal_area_dead*40000)/(pi*density_dead)),
+    dbh_har = sqrt((basal_area_har*40000)/(pi*density_har)),
+    dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
+    dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
+    dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
   ) -> GENUS_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
@@ -3958,18 +3996,22 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 ## dec
@@ -4124,22 +4166,30 @@ norate_species_comp_nfi3_nfi4_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    dbh_diss = dbh_diss / years_diff,
-    dbh_rem = dbh_rem / years_diff,
-    dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    # dbh must be recalculated as it is not the sum
+    dbh_diss = sqrt((basal_area_diss*40000)/(pi*density_diss)),
+    dbh_inc = sqrt((basal_area_inc*40000)/(pi*density_inc)),
+    dbh_dead = sqrt((basal_area_dead*40000)/(pi*density_dead)),
+    dbh_har = sqrt((basal_area_har*40000)/(pi*density_har)),
+    dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
+    dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
+    dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
   ) -> DEC_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
@@ -4163,18 +4213,22 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 ## bc
@@ -4329,22 +4383,30 @@ norate_species_comp_nfi3_nfi4_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    dbh_diss = dbh_diss / years_diff,
-    dbh_rem = dbh_rem / years_diff,
-    dbh_inc = dbh_inc / years_diff,
-    dbh_dead = dbh_dead / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    # dbh must be recalculated as it is not the sum
+    dbh_diss = sqrt((basal_area_diss*40000)/(pi*density_diss)),
+    dbh_inc = sqrt((basal_area_inc*40000)/(pi*density_inc)),
+    dbh_dead = sqrt((basal_area_dead*40000)/(pi*density_dead)),
+    dbh_har = sqrt((basal_area_har*40000)/(pi*density_har)),
+    dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
+    dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
+    dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
   ) -> BC_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
@@ -4368,18 +4430,22 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     density_rem = density_rem / years_diff,
     density_inc = density_inc / years_diff,
     density_dead = density_dead / years_diff,
+    density_har = density_har / years_diff,
     basal_area_diss = basal_area_diss / years_diff,
     basal_area_rem = basal_area_rem / years_diff,
     basal_area_inc = basal_area_inc / years_diff,
     basal_area_dead = basal_area_dead / years_diff,
+    basal_area_har = basal_area_har / years_diff,
     volume_over_bark_diss = volume_over_bark_diss / years_diff,
     volume_over_bark_rem = volume_over_bark_rem / years_diff,
     volume_over_bark_inc = volume_over_bark_inc / years_diff,
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
+    volume_over_bark_har = volume_over_bark_har / years_diff,
     volume_under_bark_diss = volume_under_bark_diss / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    volume_under_bark_har = volume_under_bark_har / years_diff
   ) -> BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### STEP 10 Tree tables ####
