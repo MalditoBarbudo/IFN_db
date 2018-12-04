@@ -536,8 +536,6 @@ ifn4_plot_topo_clim_vars %<>%
     -contains('canopy_cover')
   )
 
-## TODO Dates are not imported from access database :( They must to be done separately
-
 ## NFI3
 tbl(oracle_db, 'parcelaifn3') %>%
   collect() %>%
@@ -1123,7 +1121,7 @@ species_table_oracle %>%
   ) -> species_table
 
 ## TODO Check with Vayreda if this is ok
-## TODO The rest of the regeneration tables (nfi3 and nfi4) must be done
+
 
 #### STEP 6 PLOT general table ####
 # Let's build the overall table, joining what we have to join based on NFI4 first, NFI3
@@ -1408,7 +1406,9 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     # #fuelwood_volume = vle,
     under_bark_volume = vsc,
     under_bark_volume_dead = vsc_morts
-  ) -> PLOT_NFI_4_RESULTS ## TODO add simplified species when the that table is available
+    ## This is not the final table, as it lacks of the simpspecies dominants and
+    ## percentages. We will do this later when the simpspecies_nfi_4_results table is done
+  ) -> plot_nfi_4_results_temp 
 
 ## Results at species level for each nfi level
 tbl(oracle_db, 'r_especie_ifn2_creaf') %>%
@@ -1711,6 +1711,34 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     order_density = order_density * 1.0
     # diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_NFI_4_RESULTS
+
+# we have now the simpspecies_nfi_4_results, so we can finish the plot_nfi_4_results
+# table
+plot_nfi_4_results_temp %>%
+  left_join(
+    SIMPSPECIES_NFI_4_RESULTS %>%
+      select(plot_id, simpspecies_id, basal_area_percentage) %>%
+      group_by(plot_id) %>%
+      slice(which.max(basal_area_percentage)) %>%
+      select(
+        plot_id,
+        basal_area_simpspecies_dominant = simpspecies_id,
+        basal_area_simpspecies_percentage = basal_area_percentage
+      ),
+    by = 'plot_id'
+  ) %>%
+  left_join(
+    SIMPSPECIES_NFI_4_RESULTS %>%
+      select(plot_id, simpspecies_id, density_percentage) %>%
+      group_by(plot_id) %>%
+      slice(which.max(density_percentage)) %>%
+      select(
+        plot_id,
+        density_simpspecies_dominant = simpspecies_id,
+        density_simpspecies_percentage = density_percentage
+      ),
+    by = 'plot_id'
+  ) -> PLOT_NFI_4_RESULTS
 
 ## Results at genus level for each nfi level
 tbl(oracle_db, 'r_genere_ifn2_creaf') %>%
@@ -2320,7 +2348,7 @@ tbl(access4_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
     # order_basal_area = order_basal_area * 1.0,
     # order_density = order_density * 1.0
     diamclass_id = as.character(diamclass_id)
-  ) -> PLOT_NFI_4_DIAMCLASS_RESULTS ## TODO add simplified species when the that table is available
+  ) -> PLOT_NFI_4_DIAMCLASS_RESULTS
 
 ## Results at species level broken down by diameter classes for each nfi level
 tbl(oracle_db, 'r_especiecd_ifn2_creaf') %>%
@@ -5421,6 +5449,7 @@ plot_id_nfi_2 %>%
   ) -> REGENERATION_NFI_2
 ## TODO Q. pyrenaica, seriously?????? Check with Vayreda about the species, and talk with
 ## Raúl also.
+## TODO The rest of the regeneration tables (nfi3 and nfi4) must be done
 
 
 #### STEP X Build the database ####
