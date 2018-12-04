@@ -5017,7 +5017,7 @@ PLOTS %>%
       var_id == 'feat_access_easiness' ~ 'acces',
       var_id == 'feat_sampling_easiness' ~ 'aixecament',
       var_id == 'feat_sampling_start_date' ~ 'datamostreig',
-      var_id == 'feat_sampling_start_time' ~ 'tempsmostreig',
+      # var_id == 'feat_sampling_start_time' ~ 'tempsmostreig',
       var_id == 'feat_observations' ~ 'observacions',
       
       var_id == 'old_idparcela' ~ 'idparcela',
@@ -6280,8 +6280,8 @@ SIMPSPECIES_COMP_NFI2_NFI3_RESULTS %>%
   )
 pool::dbExecute(
   brand_new_nfi_db,
-  'ALTER TABLE "SIMSPECIES_COMP_NFI2_NFI3_RESULTS"
-  ADD PRIMARY KEY (plot_id, bc_id);'
+  'ALTER TABLE "SIMPSPECIES_COMP_NFI2_NFI3_RESULTS"
+  ADD PRIMARY KEY (plot_id, simpspecies_id);'
 )
 
 SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS %>%
