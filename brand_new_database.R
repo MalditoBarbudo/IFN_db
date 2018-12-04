@@ -345,6 +345,26 @@ tbl(access4_db, 'Parcela_MDT') %>%
         collect() %>% 
         ## again to lower letters
         {magrittr::set_names(., tolower(names(.)))} %>%
+        # there is a problem with the access database, as in the postgresql conversion
+        # dates were lost. we need to load the table as csv and remove na dates and include
+        # the correct ones
+        select(-datainici, -datafi, -horainici, -horafi) %>%
+        left_join(
+          readr::read_csv2('ParcelaIFN4_OLAP.txt', col_names = FALSE) %>%
+            select(X1:X2, X38:X41) %>%
+            magrittr::set_names(
+              value = c(
+                'idparcela', 'idclasse', 'datainici', 'datafi', 'horainici', 'horafi'
+              )
+            ),
+          by = c('idparcela', 'idclasse')
+        ) %>%
+        mutate(
+          datainici = as.POSIXct(datainici, format = '%d/%m/%Y %H:%M:%S'),
+          datafi = as.POSIXct(datafi, format = '%d/%m/%Y %H:%M:%S'),
+          horainici = as.POSIXct(horainici, format = '%d/%m/%Y %H:%M:%S'),
+          horafi = as.POSIXct(horafi, format = '%d/%m/%Y %H:%M:%S')
+        ) %>%
         ## select, renaming in the way, the variables (these names will be used later on
         ## the nfi3 and nfi2 datasets)
         select(
