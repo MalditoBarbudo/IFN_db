@@ -724,11 +724,39 @@ categorical_variables <- vars_table %>%
   select(var_id) %>%
   mutate(var_values_spa = '', var_values_cat = '', var_values_eng = '')
 
-# numerical
+## numerical
 numerical_variables <- vars_table %>%
   filter(var_type %in% c('numeric', 'integer')) %>%
   select(var_id) %>%
   mutate(var_limits = 0, var_units = '')
+
+# min_max values for numerical vars
+PLOTS %>%
+  select(one_of(numerical_variables %>% pull(var_id))) %>%
+  summarise_all(
+    .funs = dplyr::funs(
+      min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
+    )
+  ) -> PLOTS_min_max
+
+PLOTS_min_max %>%
+  select(ends_with('_min')) %>%
+  magrittr::set_names(
+    ., stringr::str_replace(names(.), '_min$', '')
+  ) %>%
+  tidyr::gather('var_id', 'var_min') %>%
+  dplyr::full_join(
+    PLOTS_min_max %>%
+      select(ends_with('_max')) %>%
+      magrittr::set_names(
+        ., stringr::str_replace(names(.), '_max$', '')
+      ) %>%
+      tidyr::gather('var_id', 'var_max'),
+    by = 'var_id'
+  )
+
+### TODO rest of min max vars, by row binding the results tables, calculate the
+### min and max and join with the numerical var
 
 # logical
 logical_variables <- vars_table %>%
