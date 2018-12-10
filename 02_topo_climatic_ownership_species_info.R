@@ -279,7 +279,7 @@ tbl(oracle_db, 'parcelaifn3') %>%
     feat_sampling_easiness = aixecament,
     feat_sampling_start_date = datamostreig,
     # feat_sampling_end_date = datafi, # does not exist
-    feat_sampling_start_time = tempsmostreig,
+    # feat_sampling_start_time = tempsmostreig, # is duration, not start point
     # feat_sampling_end_time = horafi, # does not exist
     feat_observations = observacions
   ) %>%

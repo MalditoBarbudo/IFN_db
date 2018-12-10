@@ -890,6 +890,20 @@ pool::dbExecute(
   ADD PRIMARY KEY (var_id);'
 )
 
+# let's try to be arrays
+# pool::dbExecute(
+#   brand_new_nfi_db,
+#   'ALTER TABLE "VARIABLES_CATEGORICAL" ALTER COLUMN var_values TYPE text[]'
+# )
+# 
+# categorical_variables %>%
+#   copy_to(
+#     brand_new_nfi_db, df = ., name = 'test',
+#     overwrite = TRUE, temporary = FALSE
+#   )
+# 
+# glue::glue("{[categorical_variables$var_values]}", .open = "[", .close = "]")
+
 categorical_variables %>%
   copy_to(
     brand_new_nfi_db, df = ., name = 'VARIABLES_CATEGORICAL',
@@ -960,4 +974,19 @@ pool::dbExecute(
   'ALTER TABLE "SPECIES_THESAURUS"
    ADD PRIMARY KEY (code_id);'
 )
+
+
+
+pool::dbExecute(
+  brand_new_nfi_db,
+  build_sql(
+    "CREATE TABLE test (
+     var_id TEXT PRIMARY KEY,
+     var_values TEXT []
+  );
+  ",
+    con = brand_new_nfi_db
+  )
+)
+
 
