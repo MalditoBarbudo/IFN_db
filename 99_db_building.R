@@ -915,7 +915,7 @@ categorical_variables %>%
 pool::dbExecute(
   brand_new_nfi_db,
   'ALTER TABLE "VARIABLES_CATEGORICAL"
-  ADD PRIMARY KEY (var_id);'
+  ADD PRIMARY KEY (dummy_id, var_id);'
 )
 
 numerical_variables %>%
