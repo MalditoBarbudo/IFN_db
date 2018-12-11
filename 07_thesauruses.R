@@ -1,4 +1,4 @@
-#### STEP 1 Variables thesauruses ####
+#### STEP 1 Main Variable table ####
 
 ## The main theasurus is the VARIABLES_THESAURUS, which will contain all the variables,
 ## their old names, the translations, the scenarios in which they are involved, their
@@ -718,6 +718,7 @@ writexl::write_xlsx(vars_table, 'data_raw/variables_thesaurus.xlsx')
 
 ## now we create the derived thesaurus from the variables_thesaurus:
 
+#### STEP 2 By type thesauruses ####
 # categorial
 categorical_variables <- vars_table %>%
   filter(var_type == 'character') %>%
@@ -766,7 +767,12 @@ categorical_variables %<>%
       bind_rows(PLOTS_DYNAMIC_categorical_vals) %>%
       bind_rows(RESULTS_categorical_vals),
     by = 'var_id'
-  )
+  ) %>%
+  # no easy manage of arrays exists yet between postgres and r so, let's unnest and create
+  # a key, that in combination with var_id is unique
+  unnest() %>%
+  mutate(dummy_id = 1:nrow(.)) %>%
+  select(dummy_id, var_id, var_values)
 
 ## numerical
 numerical_variables <- vars_table %>%
