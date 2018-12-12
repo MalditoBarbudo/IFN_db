@@ -216,7 +216,8 @@ tbl(oracle_db, 'r_cd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
     # dbh_rem = dbh_rem / years_diff,
     # dbh_inc = dbh_inc / years_diff,
     # dbh_dead = dbh_dead / years_diff
@@ -295,7 +296,8 @@ tbl(access4_db, 'ResultatCD_IFN4_IFN3_CREAF_OLAP') %>%
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    volume_under_bark_har = volume_under_bark_har / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### STEP 2 Functional groups comparision tables ####
@@ -426,7 +428,8 @@ tbl(oracle_db, 'r_especiecd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
 
 tbl(access4_db, 'ResultatEspecie_IFN4_IFN3_CREAF_OLAP') %>%
@@ -603,7 +606,8 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
-    volume_under_bark_har = volume_under_bark_har / years_diff
+    volume_under_bark_har = volume_under_bark_har / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### SIMPSPECIES_COMP_**** ####
@@ -732,7 +736,8 @@ tbl(oracle_db, 'r_espsimplecd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
 
 # simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
@@ -823,7 +828,10 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
   ) %>%
-  ungroup() -> SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ungroup() %>%
+  mutate(
+    diamclass_id = as.character(diamclass_id)
+  ) -> SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### GENUS_COMP_**** ####
 tbl(oracle_db, 'r_genere_ifn3_ifn2_creaf') %>%
@@ -951,7 +959,8 @@ tbl(oracle_db, 'r_generecd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> GENUS_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
 
 # simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
@@ -1042,7 +1051,10 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
   ) %>%
-  ungroup() -> GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ungroup() %>%
+  mutate(
+    diamclass_id = as.character(diamclass_id)
+  ) -> GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### DEC_COMP_**** ####
 tbl(oracle_db, 'r_cadesclcon_ifn3_ifn2_creaf') %>%
@@ -1170,7 +1182,8 @@ tbl(oracle_db, 'r_cadesclconcd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> DEC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
 
 # simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
@@ -1261,7 +1274,10 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
   ) %>%
-  ungroup() -> DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ungroup() %>%
+  mutate(
+    diamclass_id = as.character(diamclass_id)
+  ) -> DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### BC_COMP_**** ####
 tbl(oracle_db, 'r_plancon_ifn3_ifn2_creaf') %>%
@@ -1389,7 +1405,8 @@ tbl(oracle_db, 'r_planconcd_ifn3_ifn2_creaf') %>%
     volume_over_bark_dead = volume_over_bark_dead / years_diff,
     volume_under_bark_rem = volume_under_bark_rem / years_diff,
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
-    volume_under_bark_dead = volume_under_bark_dead / years_diff
+    volume_under_bark_dead = volume_under_bark_dead / years_diff,
+    diamclass_id = as.character(diamclass_id)
   ) -> BC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
 
 # simplified species and so on in the nfi3-nfi4 comparisions must be calculated from
@@ -1480,4 +1497,7 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
   ) %>%
-  ungroup() -> BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ungroup() %>%
+  mutate(
+    diamclass_id = as.character(diamclass_id)
+  ) -> BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS

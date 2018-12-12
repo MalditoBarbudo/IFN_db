@@ -57,76 +57,16 @@ tables_names %>%
   bind_rows() %>%
   mutate(
     presence_scenario1 = case_when(
-      var_table %in% {c(
-        'PLOTS', 'PLOT_NFI_2_RESULTS', 'PLOT_NFI_2_DIAMCLASS_RESULTS',
-        'PLOT_NFI_3_RESULTS', 'PLOT_NFI_3_DIAMCLASS_RESULTS',
-        'PLOT_NFI_4_RESULTS', 'PLOT_NFI_4_DIAMCLASS_RESULTS',
-        # 'SPECIES_NFI_2_RESULTS', 'SPECIES_NFI_2_DIAMCLASS_RESULTS',
-        # 'SPECIES_NFI_3_RESULTS', 'SPECIES_NFI_3_DIAMCLASS_RESULTS',
-        # 'SPECIES_NFI_4_RESULTS', 'SPECIES_NFI_4_DIAMCLASS_RESULTS',
-        # 'SIMPSPECIES_NFI_2_RESULTS', 'SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS',
-        # 'SIMPSPECIES_NFI_3_RESULTS', 'SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS',
-        # 'SIMPSPECIES_NFI_4_RESULTS', 'SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS',
-        # 'GENUS_NFI_2_RESULTS', 'GENUS_NFI_2_DIAMCLASS_RESULTS',
-        # 'GENUS_NFI_3_RESULTS', 'GENUS_NFI_3_DIAMCLASS_RESULTS',
-        # 'GENUS_NFI_4_RESULTS', 'GENUS_NFI_4_DIAMCLASS_RESULTS',
-        # 'BC_NFI_2_RESULTS', 'BC_NFI_2_DIAMCLASS_RESULTS',
-        # 'BC_NFI_3_RESULTS', 'BC_NFI_3_DIAMCLASS_RESULTS',
-        # 'BC_NFI_4_RESULTS', 'BC_NFI_4_DIAMCLASS_RESULTS',
-        # 'DEC_NFI_2_RESULTS', 'DEC_NFI_2_DIAMCLASS_RESULTS',
-        # 'DEC_NFI_3_RESULTS', 'DEC_NFI_3_DIAMCLASS_RESULTS',
-        # 'DEC_NFI_4_RESULTS', 'DEC_NFI_4_DIAMCLASS_RESULTS',
-        'PLOT_COMP_NFI2_NFI3_RESULTS', 'PLOT_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'PLOT_COMP_NFI3_NFI4_RESULTS', 'PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        # 'SPECIES_COMP_NFI2_NFI3_RESULTS', 'SPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'SPECIES_COMP_NFI3_NFI4_RESULTS', 'SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        # 'SIMPSPECIES_COMP_NFI2_NFI3_RESULTS', 'SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'SIMPSPECIES_COMP_NFI3_NFI4_RESULTS', 'SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        # 'GENUS_COMP_NFI2_NFI3_RESULTS', 'GENUS_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'GENUS_COMP_NFI3_NFI4_RESULTS', 'GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        # 'DEC_COMP_NFI2_NFI3_RESULTS', 'DEC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'DEC_COMP_NFI3_NFI4_RESULTS', 'DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        # 'BC_COMP_NFI2_NFI3_RESULTS', 'BC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'BC_COMP_NFI3_NFI4_RESULTS', 'BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'PLOTS_NFI_2_DYNAMIC_INFO', 'PLOTS_NFI_3_DYNAMIC_INFO', 'PLOTS_NFI_4_DYNAMIC_INFO'
-      )} ~ TRUE,
+      var_table %in% {
+        tables_names %>% magrittr::extract(stringr::str_detect(tables_names, 'PLOT'))
+      } ~ TRUE,
       TRUE ~ FALSE
     ),
     
     presence_scenario2 = case_when(
-      var_table %in% {c(
-        'PLOTS', #'PLOT_NFI_2_RESULTS', 'PLOT_NFI_2_DIAMCLASS_RESULTS',
-        # 'PLOT_NFI_3_RESULTS', 'PLOT_NFI_3_DIAMCLASS_RESULTS',
-        # 'PLOT_NFI_4_RESULTS', 'PLOT_NFI_4_DIAMCLASS_RESULTS',
-        'SPECIES_NFI_2_RESULTS', 'SPECIES_NFI_2_DIAMCLASS_RESULTS',
-        'SPECIES_NFI_3_RESULTS', 'SPECIES_NFI_3_DIAMCLASS_RESULTS',
-        'SPECIES_NFI_4_RESULTS', 'SPECIES_NFI_4_DIAMCLASS_RESULTS',
-        'SIMPSPECIES_NFI_2_RESULTS', 'SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS',
-        'SIMPSPECIES_NFI_3_RESULTS', 'SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS',
-        'SIMPSPECIES_NFI_4_RESULTS', 'SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS',
-        'GENUS_NFI_2_RESULTS', 'GENUS_NFI_2_DIAMCLASS_RESULTS',
-        'GENUS_NFI_3_RESULTS', 'GENUS_NFI_3_DIAMCLASS_RESULTS',
-        'GENUS_NFI_4_RESULTS', 'GENUS_NFI_4_DIAMCLASS_RESULTS',
-        'BC_NFI_2_RESULTS', 'BC_NFI_2_DIAMCLASS_RESULTS',
-        'BC_NFI_3_RESULTS', 'BC_NFI_3_DIAMCLASS_RESULTS',
-        'BC_NFI_4_RESULTS', 'BC_NFI_4_DIAMCLASS_RESULTS',
-        'DEC_NFI_2_RESULTS', 'DEC_NFI_2_DIAMCLASS_RESULTS',
-        'DEC_NFI_3_RESULTS', 'DEC_NFI_3_DIAMCLASS_RESULTS',
-        'DEC_NFI_4_RESULTS', 'DEC_NFI_4_DIAMCLASS_RESULTS',
-        # 'PLOT_COMP_NFI2_NFI3_RESULTS', 'PLOT_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        # 'PLOT_COMP_NFI3_NFI4_RESULTS', 'PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'SPECIES_COMP_NFI2_NFI3_RESULTS', 'SPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'SPECIES_COMP_NFI3_NFI4_RESULTS', 'SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'SIMPSPECIES_COMP_NFI2_NFI3_RESULTS', 'SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'SIMPSPECIES_COMP_NFI3_NFI4_RESULTS', 'SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'GENUS_COMP_NFI2_NFI3_RESULTS', 'GENUS_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'GENUS_COMP_NFI3_NFI4_RESULTS', 'GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'DEC_COMP_NFI2_NFI3_RESULTS', 'DEC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'DEC_COMP_NFI3_NFI4_RESULTS', 'DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'BC_COMP_NFI2_NFI3_RESULTS', 'BC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS',
-        'BC_COMP_NFI3_NFI4_RESULTS', 'BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
-        'PLOTS_NFI_2_DYNAMIC_INFO', 'PLOTS_NFI_3_DYNAMIC_INFO', 'PLOTS_NFI_4_DYNAMIC_INFO'
-      )} ~ TRUE,
+      var_table %in% {
+        tables_names %>% magrittr::extract(!stringr::str_detect(tables_names, '^PLOT_'))
+      } ~ TRUE,
       TRUE ~ FALSE
     ),
     
@@ -154,7 +94,7 @@ categorical_variables <- vars_table %>%
   filter(var_type == 'character') %>%
   select(var_id, var_table)
 
-## little helper
+## little helper of santa categorical
 categorical_values <- function(x) {
   rlang::sym(x) %>%
     rlang::eval_tidy() %>%
@@ -178,151 +118,43 @@ categorical_variables <- tables_names %>%
 ## numerical
 numerical_variables <- vars_table %>%
   filter(var_type %in% c('numeric', 'integer')) %>%
-  select(var_id) %>%
+  select(var_id, var_table) %>%
   mutate(var_units = '')
 
-# min_max values for numerical vars
+# little helper of santa numerical
+numerical_values <- function(x) {
+  rlang::sym(x) %>%
+    rlang::eval_tidy() %>%
+    select(one_of(numerical_variables %>% pull(var_id) %>% unique())) %>%
+    summarise_all(
+      .funs = dplyr::funs(
+        min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
+      )
+    ) -> min_max
+  
+  min_max %>%
+    select(ends_with('_min')) %>%
+    magrittr::set_names(
+      ., stringr::str_replace(names(.), '_min$', '')
+    ) %>%
+    tidyr::gather('var_id', 'var_min') %>%
+    dplyr::full_join(
+      min_max %>%
+        select(ends_with('_max')) %>%
+        magrittr::set_names(
+          ., stringr::str_replace(names(.), '_max$', '')
+        ) %>%
+        tidyr::gather('var_id', 'var_max'),
+      by = 'var_id'
+    ) %>%
+    mutate(var_table = x)
+}
 
-# plots table 
-PLOTS %>%
-  select(one_of(numerical_variables %>% pull(var_id))) %>%
-  summarise_all(
-    .funs = dplyr::funs(
-      min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
-    )
-  ) -> PLOTS_min_max
-
-PLOTS_min_max %>%
-  select(ends_with('_min')) %>%
-  magrittr::set_names(
-    ., stringr::str_replace(names(.), '_min$', '')
-  ) %>%
-  tidyr::gather('var_id', 'var_min') %>%
-  dplyr::full_join(
-    PLOTS_min_max %>%
-      select(ends_with('_max')) %>%
-      magrittr::set_names(
-        ., stringr::str_replace(names(.), '_max$', '')
-      ) %>%
-      tidyr::gather('var_id', 'var_max'),
-    by = 'var_id'
-  ) -> PLOTS_numerical_limits
-
-# plots dynamic info tables
-PLOTS_NFI_2_DYNAMIC_INFO %>%
-  bind_rows(PLOTS_NFI_3_DYNAMIC_INFO) %>%
-  bind_rows(PLOTS_NFI_4_DYNAMIC_INFO) %>%
-  select(one_of(numerical_variables %>% pull(var_id))) %>%
-  summarise_all(
-    .funs = dplyr::funs(
-      min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
-    )
-  ) -> PLOTS_DYNAMIC_INFO_min_max
-
-PLOTS_DYNAMIC_INFO_min_max %>%
-  select(ends_with('_min')) %>%
-  magrittr::set_names(
-    ., stringr::str_replace(names(.), '_min$', '')
-  ) %>%
-  tidyr::gather('var_id', 'var_min') %>%
-  dplyr::full_join(
-    PLOTS_DYNAMIC_INFO_min_max %>%
-      select(ends_with('_max')) %>%
-      magrittr::set_names(
-        ., stringr::str_replace(names(.), '_max$', '')
-      ) %>%
-      tidyr::gather('var_id', 'var_max'),
-    by = 'var_id'
-  ) -> PLOTS_DYNAMIC_numerical_limits
-
-# results tables
-list(
-  PLOT_NFI_2_RESULTS, PLOT_NFI_3_RESULTS, PLOT_NFI_4_RESULTS,
-  PLOT_NFI_2_DIAMCLASS_RESULTS, PLOT_NFI_3_DIAMCLASS_RESULTS, PLOT_NFI_4_DIAMCLASS_RESULTS,
-  SPECIES_NFI_2_RESULTS, SPECIES_NFI_3_RESULTS, SPECIES_NFI_4_RESULTS,
-  SPECIES_NFI_2_DIAMCLASS_RESULTS, SPECIES_NFI_3_DIAMCLASS_RESULTS, SPECIES_NFI_4_DIAMCLASS_RESULTS,
-  SIMPSPECIES_NFI_2_RESULTS, SIMPSPECIES_NFI_3_RESULTS, SIMPSPECIES_NFI_4_RESULTS,
-  SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS, SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS, SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS,
-  GENUS_NFI_2_RESULTS, GENUS_NFI_3_RESULTS, GENUS_NFI_4_RESULTS,
-  GENUS_NFI_2_DIAMCLASS_RESULTS, GENUS_NFI_3_DIAMCLASS_RESULTS, GENUS_NFI_4_DIAMCLASS_RESULTS,
-  DEC_NFI_2_RESULTS, DEC_NFI_3_RESULTS, DEC_NFI_4_RESULTS,
-  DEC_NFI_2_DIAMCLASS_RESULTS, DEC_NFI_3_DIAMCLASS_RESULTS, DEC_NFI_4_DIAMCLASS_RESULTS,
-  BC_NFI_2_RESULTS, BC_NFI_3_RESULTS, BC_NFI_4_RESULTS,
-  BC_NFI_2_DIAMCLASS_RESULTS, BC_NFI_3_DIAMCLASS_RESULTS, BC_NFI_4_DIAMCLASS_RESULTS
-) %>%
-  reduce(bind_rows) %>%
-  select(one_of(numerical_variables %>% pull(var_id))) %>%
-  summarise_all(
-    .funs = dplyr::funs(
-      min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
-    )
-  ) -> RESULTS_min_max
-
-RESULTS_min_max %>%
-  select(ends_with('_min')) %>%
-  magrittr::set_names(
-    ., stringr::str_replace(names(.), '_min$', '')
-  ) %>%
-  tidyr::gather('var_id', 'var_min') %>%
-  dplyr::full_join(
-    RESULTS_min_max %>%
-      select(ends_with('_max')) %>%
-      magrittr::set_names(
-        ., stringr::str_replace(names(.), '_max$', '')
-      ) %>%
-      tidyr::gather('var_id', 'var_max'),
-    by = 'var_id'
-  ) -> RESULTS_numerical_limits
-
-# comparation tables
-# list(
-#   PLOT_COMP_NFI2_NFI3_RESULTS, PLOT_COMP_NFI3_NFI4_RESULTS,
-#   PLOT_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS,
-#   SPECIES_COMP_NFI2_NFI3_RESULTS, SPECIES_COMP_NFI3_NFI4_RESULTS,
-#   SPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS,
-#   SIMPSPECIES_COMP_NFI2_NFI3_RESULTS, SIMPSPECIES_COMP_NFI3_NFI4_RESULTS,
-#   SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS,
-#   GENUS_COMP_NFI2_NFI3_RESULTS, GENUS_COMP_NFI3_NFI4_RESULTS,
-#   GENUS_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS,
-#   DEC_COMP_NFI2_NFI3_RESULTS, DEC_COMP_NFI3_NFI4_RESULTS,
-#   DEC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS,
-#   BC_COMP_NFI2_NFI3_RESULTS, BC_COMP_NFI3_NFI4_RESULTS,
-#   BC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS, BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
-# ) %>%
-#   reduce(bind_rows) %>%
-#   select(one_of(numerical_variables %>% pull(var_id))) %>%
-#   summarise_all(
-#     .funs = dplyr::funs(
-#       min = floor(min(., na.rm = TRUE)), max = ceiling(max(., na.rm = TRUE))
-#     )
-#   ) -> COMP_RESULTS_min_max
-# 
-# COMP_RESULTS_min_max %>%
-#   select(ends_with('_min')) %>%
-#   magrittr::set_names(
-#     ., stringr::str_replace(names(.), '_min$', '')
-#   ) %>%
-#   tidyr::gather('var_id', 'var_min') %>%
-#   dplyr::full_join(
-#     COMP_RESULTS_min_max %>%
-#       select(ends_with('_max')) %>%
-#       magrittr::set_names(
-#         ., stringr::str_replace(names(.), '_max$', '')
-#       ) %>%
-#       tidyr::gather('var_id', 'var_max'),
-#     by = 'var_id'
-#   ) -> COMP_RESULTS_numerical_limits
-
-numerical_variables %<>%
-  left_join(
-    PLOTS_numerical_limits %>%
-      union(PLOTS_DYNAMIC_numerical_limits) %>%
-      union(RESULTS_numerical_limits),
-    by = 'var_id'
-  )
-
-### TODO rest of min max vars, by row binding the results tables, calculate the
-### min and max and join with the numerical var
+numerical_variables <- tables_names %>%
+  purrr::map(numerical_values) %>%
+  bind_rows() %>%
+  right_join(numerical_variables, by = c('var_id', 'var_table')) %>%
+  select(var_id, var_table, everything())
 
 # logical
 logical_variables <- vars_table %>%
