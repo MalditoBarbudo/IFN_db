@@ -782,7 +782,8 @@ norate_species_comp_nfi3_nfi4_results %>%
     dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
     dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
     dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
-  ) -> SIMPSPECIES_COMP_NFI3_NFI4_RESULTS
+  ) %>%
+  ungroup() -> SIMPSPECIES_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
   left_join(
@@ -821,7 +822,8 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
-  ) -> SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ) %>%
+  ungroup() -> SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### GENUS_COMP_**** ####
 tbl(oracle_db, 'r_genere_ifn3_ifn2_creaf') %>%
@@ -999,7 +1001,8 @@ norate_species_comp_nfi3_nfi4_results %>%
     dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
     dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
     dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
-  ) -> GENUS_COMP_NFI3_NFI4_RESULTS
+  ) %>%
+  ungroup() -> GENUS_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
   left_join(
@@ -1038,7 +1041,8 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
-  ) -> GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ) %>%
+  ungroup() -> GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### DEC_COMP_**** ####
 tbl(oracle_db, 'r_cadesclcon_ifn3_ifn2_creaf') %>%
@@ -1216,7 +1220,8 @@ norate_species_comp_nfi3_nfi4_results %>%
     dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
     dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
     dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
-  ) -> DEC_COMP_NFI3_NFI4_RESULTS
+  ) %>%
+  ungroup() -> DEC_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
   left_join(
@@ -1255,7 +1260,8 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
-  ) -> DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ) %>%
+  ungroup() -> DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
 
 #### BC_COMP_**** ####
 tbl(oracle_db, 'r_plancon_ifn3_ifn2_creaf') %>%
@@ -1433,7 +1439,8 @@ norate_species_comp_nfi3_nfi4_results %>%
     dbh_rem = sqrt((basal_area_rem*40000)/(pi*density_rem)),
     dbh_balance = sqrt((basal_area_balance*40000)/(pi*density_balance)),
     dbh_growth = sqrt((basal_area_growth*40000)/(pi*density_growth))
-  ) -> BC_COMP_NFI3_NFI4_RESULTS
+  ) %>%
+  ungroup() -> BC_COMP_NFI3_NFI4_RESULTS
 
 norate_species_comp_nfi3_nfi4_diamclass_results %>%
   left_join(
@@ -1472,4 +1479,5 @@ norate_species_comp_nfi3_nfi4_diamclass_results %>%
     volume_under_bark_inc = volume_under_bark_inc / years_diff,
     volume_under_bark_dead = volume_under_bark_dead / years_diff,
     volume_under_bark_har = volume_under_bark_har / years_diff
-  ) -> BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+  ) %>%
+  ungroup() -> BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
