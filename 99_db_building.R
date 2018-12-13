@@ -881,13 +881,13 @@ vars_table %>%
     brand_new_nfi_db, df = ., name = 'VARIABLES_THESAURUS',
     overwrite = TRUE, temporary = FALSE,
     indexes = list(
-      'var_id'
+      c('var_id', 'var_table')
     )
   )
 pool::dbExecute(
   brand_new_nfi_db,
   'ALTER TABLE "VARIABLES_THESAURUS"
-  ADD PRIMARY KEY (var_id);'
+  ADD PRIMARY KEY (var_id,var_table);'
 )
 
 # let's try to be arrays
