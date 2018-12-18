@@ -909,7 +909,7 @@ categorical_variables %>%
     brand_new_nfi_db, df = ., name = 'VARIABLES_CATEGORICAL',
     overwrite = TRUE, temporary = FALSE,
     indexes = list(
-      'var_id'
+      'dummy_id', 'var_id'
     )
   )
 pool::dbExecute(
@@ -923,13 +923,13 @@ numerical_variables %>%
     brand_new_nfi_db, df = ., name = 'VARIABLES_NUMERICAL',
     overwrite = TRUE, temporary = FALSE,
     indexes = list(
-      'var_id'
+      'var_id', 'var_table'
     )
   )
 pool::dbExecute(
   brand_new_nfi_db,
   'ALTER TABLE "VARIABLES_NUMERICAL"
-  ADD PRIMARY KEY (var_id);'
+  ADD PRIMARY KEY (var_id, var_table);'
 )
 
 logical_variables %>%
