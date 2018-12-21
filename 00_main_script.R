@@ -18,15 +18,15 @@ library(glue)
 # db connections
 oracle_db <- dbPool(
   RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
-  password = rstudioapi::askForPassword('Password for ifn'),
+  user = 'guest',
+  password = 'guest',
   dbname = 'oracle_ifn'
 )
 
 access4_db <- dbPool(
   RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
-  password = rstudioapi::askForPassword('Password for ifn'),
+  user = 'guest',
+  password = 'guest',
   dbname = 'ifn4_access'
 )
 

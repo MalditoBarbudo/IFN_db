@@ -164,5 +164,5 @@ logical_variables <- vars_table %>%
 # dates
 dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
-  select(var_id)
+  select(var_id, var_table)
 
