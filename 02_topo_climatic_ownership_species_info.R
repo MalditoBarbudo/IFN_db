@@ -765,8 +765,8 @@ ifn2_ifn3_ifn4_plots %>%
     admin_province_id = CODIPROV,
     admin_region_id = CODICOMAR,
     admin_municipality_id = CODIMUNI,
-    admin_natural_interest_area = nom_pein,
-    admin_special_protection_natural_area = nom_enpe,
+    admin_natural_interest_area = nom_enpe,
+    admin_special_protection_natural_area = nom_pein,
     admin_natura_network_2000 = nom_xn2000
   ) -> admin_info
 
