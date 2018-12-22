@@ -768,6 +768,9 @@ ifn2_ifn3_ifn4_plots %>%
     admin_natural_interest_area = nom_enpe,
     admin_special_protection_natural_area = nom_pein,
     admin_natura_network_2000 = nom_xn2000
+  ) %>%
+  mutate(
+    admin_aut_community = 'Catalunya'
   ) -> admin_info
 
 ## TODO Check this cases
