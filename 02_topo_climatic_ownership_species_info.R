@@ -588,7 +588,7 @@ ifn2_ifn3_ifn4_plots %>%
     }
   ) %>%
   {magrittr::set_names(., tolower(names(.)))} %>%
-  as_data_frame() %>%
+  as_tibble() %>%
   mutate_if(
     is.factor, ~tolower(as.character(.x))
   ) %>%
@@ -753,7 +753,7 @@ ifn2_ifn3_ifn4_plots %>%
         select(nom_xn2000 = nom_n2)
     }
   ) %>%
-  as_data_frame() %>%
+  as_tibble() %>%
   mutate_if(
     is.factor, as.character
   ) %>%

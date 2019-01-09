@@ -875,6 +875,34 @@ pool::dbExecute(
   ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
 )
 
+SIMPSPECIES_COMP_NFI3_NFI4_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_COMP_NFI3_NFI4_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_RESULTS"
+  ADD PRIMARY KEY (plot_id, simpspecies_id);'
+)
+
+SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'diamclass_id', 'simpspecies_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS"
+  ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
+)
+
 #### Variables Thesaurus ####
 vars_table %>%
   copy_to(

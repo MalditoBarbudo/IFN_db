@@ -95,6 +95,27 @@ PLOTS %<>%
     clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)
   )
 
+# There is one plot that is outside the Catalonia limits, we fix it manually:
+PLOTS %<>%
+  mutate(
+    admin_province = case_when(
+      plot_id == 'P_04713' ~ 'Girona',
+      TRUE ~ admin_province
+    ),
+    admin_vegueria = case_when(
+      plot_id == 'P_04713' ~ 'Girona',
+      TRUE ~ admin_vegueria
+    ),
+    admin_region = case_when(
+      plot_id == 'P_04713' ~ 'Alt Empordà',
+      TRUE ~ admin_region
+    ),
+    admin_municipality = case_when(
+      plot_id == 'P_04713' ~ 'Albanyà',
+      TRUE ~ admin_municipality
+    )
+  )
+
 #### STEP 2 PLOT dynamic tables ####
 # ***_dynamic_plot_topo_clim_vars comes from 02 script
 PLOTS_NFI_2_DYNAMIC_INFO <- ifn2_dynamic_plot_topo_clim_vars

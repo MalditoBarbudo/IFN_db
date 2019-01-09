@@ -127,23 +127,27 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ########################################################################################
+  # Here, bh and br (as well as ch and cr) are exchanged, so we have to fix it. the easy #
+  # way of doing this is changing them here in the select/rename step                    #
+  ########################################################################################
   select(
     plot_id, #everything()
     basal_area = ab,
     basal_area_dead = abmorts,
     aerial_biomass_total = bat,
     trunk_bark_biomass = bc,
-    leaf_biomass = bh,
+    leaf_biomass = br,
     trunk_wood_biomass = bm,
-    branch_wo_leaves_biomass = br,
+    branch_wo_leaves_biomass = bh,
     basal_area_dec_dominant = caducesclerconifab,
     density_dec_dominant = caducesclerconifdens,
     aerial_carbon_total = cat,
     trunk_bark_carbon = cc,
     accumulated_aerial_co2 = cca,
-    leaf_carbon = ch,
+    leaf_carbon = cr,
     trunk_wood_carbon = cm,
-    branch_wo_leaves_carbon = cr,
+    branch_wo_leaves_carbon = ch,
     dbh = dbh,
     dbh_dead = dbhmorts,
     density = densitat,
@@ -1091,6 +1095,10 @@ tbl(access4_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
+  ########################################################################################
+  # Here, bh and br (as well as ch and cr) are exchanged, so we have to fix it. the easy #
+  # way of doing this is changing them here in the select/rename step                    #
+  ########################################################################################
   select(
     plot_id, #everything()
     diamclass_id = idcd,
@@ -1098,15 +1106,15 @@ tbl(access4_db, 'ResultatCD_IFN4_CREAF_OLAP') %>%
     basal_area_dead = abmorts,
     aerial_biomass_total = bat,
     trunk_bark_biomass = bc,
-    leaf_biomass = bh,
+    leaf_biomass = br,
     trunk_wood_biomass = bm,
-    branch_wo_leaves_biomass = br,
+    branch_wo_leaves_biomass = bh,
     aerial_carbon_total = cat,
     trunk_bark_carbon = cc,
     accumulated_aerial_co2 = cca,
-    leaf_carbon = ch,
+    leaf_carbon = cr,
     trunk_wood_carbon = cm,
-    branch_wo_leaves_carbon = cr,
+    branch_wo_leaves_carbon = ch,
     density = densitat,
     density_dead = densitatmorts,
     canopy_cover = rc,
