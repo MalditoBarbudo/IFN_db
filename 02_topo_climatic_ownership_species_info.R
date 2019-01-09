@@ -129,7 +129,8 @@ tbl(access4_db, 'Parcela_MDT') %>%
               'gener' = '_jan', 'febrer' = '_feb', 'març' = '_mar', 'abril' = '_apr',
               'maig' = '_may', 'juny' = '_jun', 'juliol' = '_jul', 'agost' = '_aug',
               'setembre' = '_sep', 'octubre' = '_oct', 'novembre' = '_nov',
-              'desembre' = '_dec', 'anual' = '_year', 'tmit' = 'tmean'
+              'desembre' = '_dec', 'anual' = '_year', 'tmit' = 'tmean',
+              'red' = 'rad', 'raf' = 'rad'
             )
           ))
         } %>%
@@ -140,8 +141,13 @@ tbl(access4_db, 'Parcela_MDT') %>%
         ## columns order by climatic variable
         select(
           old_idparcela = clim_idparcela, old_idclasse_nfi4 = clim_idclasse,
-          -clim_id_grafic, -starts_with('clim_coor'), starts_with('clim_prec'),
+          -clim_id_gradic, -starts_with('clim_coor'), starts_with('clim_prec'),
           starts_with('clim_rad'), starts_with('clim_t')
+        ) %>%
+        # clim values are expressed in tenths (décimas), so we need to divide by 10
+        mutate_at(
+          vars(starts_with('clim_t'), starts_with('clim_prec')),
+          funs(. / 10)
         )
     },
     by = c('old_idparcela', 'old_idclasse_nfi4')
