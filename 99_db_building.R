@@ -897,14 +897,15 @@ SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS %>%
       c('plot_id', 'diamclass_id', 'simpspecies_id')
     )
   )
-pool::dbExecute(
-  brand_new_nfi_db,
-  'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS"
-  ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
-)
+# pool::dbExecute(
+#   brand_new_nfi_db,
+#   'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS"
+#   ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
+# )
 
 #### Variables Thesaurus ####
-vars_table %>%
+# vars_table %>%
+readr::read_csv('data_raw/variables_thesaurus_modified.csv') %>%
   copy_to(
     brand_new_nfi_db, df = ., name = 'VARIABLES_THESAURUS',
     overwrite = TRUE, temporary = FALSE,
@@ -1005,16 +1006,30 @@ pool::dbExecute(
 
 
 
+# pool::dbExecute(
+#   brand_new_nfi_db,
+#   build_sql(
+#     "CREATE TABLE test (
+#      var_id TEXT PRIMARY KEY,
+#      var_values TEXT []
+#   );
+#   ",
+#     con = brand_new_nfi_db
+#   )
+# )
+
+#### App texts thesaurus ####
+readr::read_csv('data_raw/texts_thesaurus.csv') %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'TEXTS_THESAURUS',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      'text_id'
+    )
+  )
 pool::dbExecute(
   brand_new_nfi_db,
-  build_sql(
-    "CREATE TABLE test (
-     var_id TEXT PRIMARY KEY,
-     var_values TEXT []
-  );
-  ",
-    con = brand_new_nfi_db
-  )
+  'ALTER TABLE "TEXTS_THESAURUS"
+  ADD PRIMARY KEY (text_id);'
 )
-
 

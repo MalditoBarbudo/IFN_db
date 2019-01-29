@@ -32,7 +32,8 @@ ifn2_ifn3_ifn4_plots %>%
 # Miramon maps are in ED50 projection, so we need to convert the coordinates that we
 # have from ETRS89 to ED50, load the raster images in the geotiff format (with the
 # raster::raster function) and extract the values at the coordinates (with the
-# raster::extract function)
+# raster::extract function).
+# Also we divide by 10 as they are in decimal
 PLOTS %>%
   select(coords_utm_x_ETRS89, coords_utm_y_ETRS89) %>% 
   sp::SpatialPoints(sp::CRS('+init=epsg:23031')) -> plots_sppoints_ed50
@@ -67,32 +68,32 @@ etr_dec_raster <- raster::raster('data_raw/mmm_geotiffs/ETR_K10 versión GeoTIF/
 PLOTS %<>%
   select(-starts_with('clim_etp_'), -starts_with('clim_etr_')) %>%
   mutate(
-    clim_pet_year = raster::extract(etp_year_raster, plots_sppoints_ed50),
-    clim_pet_jan = raster::extract(etp_jan_raster, plots_sppoints_ed50),
-    clim_pet_feb = raster::extract(etp_feb_raster, plots_sppoints_ed50),
-    clim_pet_mar = raster::extract(etp_mar_raster, plots_sppoints_ed50),
-    clim_pet_apr = raster::extract(etp_apr_raster, plots_sppoints_ed50),
-    clim_pet_may = raster::extract(etp_may_raster, plots_sppoints_ed50),
-    clim_pet_jun = raster::extract(etp_jun_raster, plots_sppoints_ed50),
-    clim_pet_jul = raster::extract(etp_jul_raster, plots_sppoints_ed50),
-    clim_pet_aug = raster::extract(etp_aug_raster, plots_sppoints_ed50),
-    clim_pet_sep = raster::extract(etp_sep_raster, plots_sppoints_ed50),
-    clim_pet_oct = raster::extract(etp_oct_raster, plots_sppoints_ed50),
-    clim_pet_nov = raster::extract(etp_nov_raster, plots_sppoints_ed50),
-    clim_pet_dec = raster::extract(etp_dec_raster, plots_sppoints_ed50),
-    clim_ret_year = raster::extract(etr_year_raster, plots_sppoints_ed50),
-    clim_ret_jan = raster::extract(etr_jan_raster, plots_sppoints_ed50),
-    clim_ret_feb = raster::extract(etr_feb_raster, plots_sppoints_ed50),
-    clim_ret_mar = raster::extract(etr_mar_raster, plots_sppoints_ed50),
-    clim_ret_apr = raster::extract(etr_apr_raster, plots_sppoints_ed50),
-    clim_ret_may = raster::extract(etr_may_raster, plots_sppoints_ed50),
-    clim_ret_jun = raster::extract(etr_jun_raster, plots_sppoints_ed50),
-    clim_ret_jul = raster::extract(etr_jul_raster, plots_sppoints_ed50),
-    clim_ret_aug = raster::extract(etr_aug_raster, plots_sppoints_ed50),
-    clim_ret_sep = raster::extract(etr_sep_raster, plots_sppoints_ed50),
-    clim_ret_oct = raster::extract(etr_oct_raster, plots_sppoints_ed50),
-    clim_ret_nov = raster::extract(etr_nov_raster, plots_sppoints_ed50),
-    clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)
+    clim_pet_year = raster::extract(etp_year_raster, plots_sppoints_ed50)/10,
+    clim_pet_jan = raster::extract(etp_jan_raster, plots_sppoints_ed50)/10,
+    clim_pet_feb = raster::extract(etp_feb_raster, plots_sppoints_ed50)/10,
+    clim_pet_mar = raster::extract(etp_mar_raster, plots_sppoints_ed50)/10,
+    clim_pet_apr = raster::extract(etp_apr_raster, plots_sppoints_ed50)/10,
+    clim_pet_may = raster::extract(etp_may_raster, plots_sppoints_ed50)/10,
+    clim_pet_jun = raster::extract(etp_jun_raster, plots_sppoints_ed50)/10,
+    clim_pet_jul = raster::extract(etp_jul_raster, plots_sppoints_ed50)/10,
+    clim_pet_aug = raster::extract(etp_aug_raster, plots_sppoints_ed50)/10,
+    clim_pet_sep = raster::extract(etp_sep_raster, plots_sppoints_ed50)/10,
+    clim_pet_oct = raster::extract(etp_oct_raster, plots_sppoints_ed50)/10,
+    clim_pet_nov = raster::extract(etp_nov_raster, plots_sppoints_ed50)/10,
+    clim_pet_dec = raster::extract(etp_dec_raster, plots_sppoints_ed50)/10,
+    clim_ret_year = raster::extract(etr_year_raster, plots_sppoints_ed50)/10,
+    clim_ret_jan = raster::extract(etr_jan_raster, plots_sppoints_ed50)/10,
+    clim_ret_feb = raster::extract(etr_feb_raster, plots_sppoints_ed50)/10,
+    clim_ret_mar = raster::extract(etr_mar_raster, plots_sppoints_ed50)/10,
+    clim_ret_apr = raster::extract(etr_apr_raster, plots_sppoints_ed50)/10,
+    clim_ret_may = raster::extract(etr_may_raster, plots_sppoints_ed50)/10,
+    clim_ret_jun = raster::extract(etr_jun_raster, plots_sppoints_ed50)/10,
+    clim_ret_jul = raster::extract(etr_jul_raster, plots_sppoints_ed50)/10,
+    clim_ret_aug = raster::extract(etr_aug_raster, plots_sppoints_ed50)/10,
+    clim_ret_sep = raster::extract(etr_sep_raster, plots_sppoints_ed50)/10,
+    clim_ret_oct = raster::extract(etr_oct_raster, plots_sppoints_ed50)/10,
+    clim_ret_nov = raster::extract(etr_nov_raster, plots_sppoints_ed50)/10,
+    clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)/10
   )
 
 # There is one plot that is outside the Catalonia limits, we fix it manually:

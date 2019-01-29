@@ -498,8 +498,8 @@ plot_nfi_4_results_temp %>%
       slice(which.max(basal_area_percentage)) %>%
       select(
         plot_id,
-        basal_area_simpspecies_dominant = simpspecies_id,
-        basal_area_simpspecies_percentage = basal_area_percentage
+        basal_area_simp_species_dominant = simpspecies_id,
+        basal_area_simp_species_percentage = basal_area_percentage
       ),
     by = 'plot_id'
   ) %>%
@@ -510,8 +510,8 @@ plot_nfi_4_results_temp %>%
       slice(which.max(density_percentage)) %>%
       select(
         plot_id,
-        density_simpspecies_dominant = simpspecies_id,
-        density_simpspecies_percentage = density_percentage
+        density_simp_species_dominant = simpspecies_id,
+        density_simp_species_percentage = density_percentage
       ),
     by = 'plot_id'
   ) -> PLOT_NFI_4_RESULTS
