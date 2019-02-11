@@ -883,11 +883,11 @@ SIMPSPECIES_COMP_NFI3_NFI4_RESULTS %>%
       c('plot_id', 'simpspecies_id')
     )
   )
-pool::dbExecute(
-  brand_new_nfi_db,
-  'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_RESULTS"
-  ADD PRIMARY KEY (plot_id, simpspecies_id);'
-)
+# pool::dbExecute(
+#   brand_new_nfi_db,
+#   'ALTER TABLE "SIMPSPECIES_COMP_NFI3_NFI4_RESULTS"
+#   ADD PRIMARY KEY (plot_id, simpspecies_id);'
+# )
 
 SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS %>%
   copy_to(
