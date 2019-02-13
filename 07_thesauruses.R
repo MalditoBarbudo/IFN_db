@@ -156,6 +156,8 @@ numerical_variables <- tables_names %>%
   right_join(numerical_variables, by = c('var_id', 'var_table')) %>%
   select(var_id, var_table, everything())
 
+writexl::write_xlsx(numerical_variables, 'data_raw/numerical_variables.xlsx')
+
 # logical
 logical_variables <- vars_table %>%
   filter(var_type == 'logical') %>%

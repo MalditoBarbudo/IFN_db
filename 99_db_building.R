@@ -947,7 +947,8 @@ pool::dbExecute(
   ADD PRIMARY KEY (dummy_id, var_id);'
 )
 
-numerical_variables %>%
+# numerical_variables %>%
+readr::read_csv('data_raw/numerical_variables.csv') %>%
   copy_to(
     brand_new_nfi_db, df = ., name = 'VARIABLES_NUMERICAL',
     overwrite = TRUE, temporary = FALSE,
