@@ -96,23 +96,27 @@ PLOTS %<>%
     clim_ret_dec = raster::extract(etr_dec_raster, plots_sppoints_ed50)/10
   )
 
-# There is one plot that is outside the Catalonia limits, we fix it manually:
+# There is two plots that is outside the Catalonia limits, we fix it manually:
 PLOTS %<>%
   mutate(
     admin_province = case_when(
       plot_id == 'P_04713' ~ 'Girona',
+      plot_id == 'P_08180' ~ 'Girona',
       TRUE ~ admin_province
     ),
     admin_vegueria = case_when(
       plot_id == 'P_04713' ~ 'Girona',
+      plot_id == 'P_08180' ~ 'Alt Pirineu i Aran',
       TRUE ~ admin_vegueria
     ),
     admin_region = case_when(
       plot_id == 'P_04713' ~ 'Alt Empordà',
+      plot_id == 'P_08180' ~ 'Cerdanya',
       TRUE ~ admin_region
     ),
     admin_municipality = case_when(
       plot_id == 'P_04713' ~ 'Albanyà',
+      plot_id == 'P_08180' ~ 'Llívia',
       TRUE ~ admin_municipality
     )
   )
