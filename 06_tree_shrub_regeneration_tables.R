@@ -155,6 +155,11 @@ tbl(oracle_db, 'especiematollarifn2') %>%
 
 tbl(oracle_db, 'especiematollarifn3') %>%
   collect() %>%
+  # plot P_10896 (old_idparcela = 251955) has a different idclasse, we have to change it
+  # before the join
+  mutate(
+    idclasse = if_else(idparcela == '251955', 'NN', idclasse)
+  ) %>% 
   left_join(
     plot_id_nfi_3, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi3')
   ) %>%
@@ -186,29 +191,66 @@ tbl(access4_db, 'EspecieMatollarIFN4_OLAP') %>%
 # with the nfi version plots
 plot_id_nfi_2 %>%
   left_join(
-    tbl(oracle_db, 'regeneracioifn2_espanya') %>% collect(),
+    tbl(oracle_db, 'r_especie_ifn2_regener') %>% collect(),
     by = c('old_idparcela' = 'idparcela')
   ) %>%
-  # here we join the species table to get the species names
-  left_join(
-    species_table %>% select(code_id, species_id_NFI2_3),
-    by = c('idespecie' = 'code_id')
-  ) %>%
-  mutate(iddensitat = as.numeric(iddensitat)) %>%
-  # we need to conver the iddensitat var to its value
-  left_join(
-    tbl(access4_db, 'TesaureRegeneracio') %>% collect() %>% select(IdDensitat, Densitat),
-    by = c('iddensitat' = 'IdDensitat')
-  ) %>%
+  # there is plots with no information whatsoever in the regener table, so lets remove
+  # them
+  filter(!is.na(idespecieifn2)) %>%
   select(
     plot_id,
-    species_id = species_id_NFI2_3,
-    density_class = Densitat,
-    tree_number = nombrepeus,
-    tree_mean_height = hm
+    species_id = idespecieifn2,
+    regeneration_130 = regenerpeus130,
+    regeneration_small_trees = regenerpeusmenors,
+    small_trees_mean_height = hmitjanapeusmenors
   ) -> REGENERATION_NFI_2
+
+plot_id_nfi_3 %>%
+  left_join(
+    tbl(oracle_db, 'r_especie_ifn3_regener') %>% collect(),
+    by = c('old_idparcela' = 'idparcela', 'old_idclasse_nfi3' = 'idclasse')
+  ) %>%
+  # there is plots with no information whatsoever in the regener table, so lets remove
+  # them
+  filter(!is.na(idespecie)) %>%
+  select(
+    plot_id,
+    species_id = idespecie,
+    regeneration_seedlings = regenerplantules,
+    regeneration_striplings = regenerplançons,
+    regeneration_130 = regenerpeus130,
+    regeneration_small_trees = regenerpeusmenors,
+    small_trees_mean_height = hmitjanapeusmenors
+    # origin_regeneration_seedlings = origenregeneratplantules,
+    # origin_regeneration_striplings = origenregeneratplançons,
+    # origin_regeneration_130 = origenregeneratpeus130,
+    # origin_regeneration_small_trees = origenregeneratpeusmenors,
+  ) -> REGENERATION_NFI_3
+
+plot_id_nfi_4 %>%
+  left_join(
+    tbl(access4_db, 'ResultatEspecie_IFN4_Regeneracio_OLAP') %>% collect(),
+    by = c('old_idparcela' = 'IdParcela', 'old_idclasse_nfi4' = 'IdClasse')
+  ) %>%
+  # there is plots with no information whatsoever in the regener table, so lets remove
+  # them
+  filter(!is.na(Especie)) %>%
+  select(
+    plot_id,
+    species_id = Especie,
+    regeneration_seedlings = RegeneracioPlantules,
+    regeneration_striplings = RegeneracioPlançons,
+    regeneration_130 = RegeneracioPeus130,
+    regeneration_small_trees = RegeneracioPeusMenors,
+    small_trees_mean_height = HmitjanaPeusMenors
+    # origin_regeneration_seedlings = origenregeneratplantules,
+    # origin_regeneration_striplings = origenregeneratplançons,
+    # origin_regeneration_130 = origenregeneratpeus130,
+    # origin_regeneration_small_trees = origenregeneratpeusmenors,
+  ) -> REGENERATION_NFI_4
+
+
 ## TODO Q. pyrenaica, seriously?????? Check with Vayreda about the species, and talk with
 ## Raúl also.
-## TODO The rest of the regeneration tables (nfi3 and nfi4) must be done
 
 

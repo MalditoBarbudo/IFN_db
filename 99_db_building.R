@@ -903,6 +903,64 @@ SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS %>%
 #   ADD PRIMARY KEY (plot_id, diamclass_id, simpspecies_id);'
 # )
 
+#### Shrub tables ####
+SHRUB_NFI_2_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SHRUB_NFI_2_INFO',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SHRUB_NFI_2_INFO"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+SHRUB_NFI_3_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SHRUB_NFI_3_INFO',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SHRUB_NFI_3_INFO"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+SHRUB_NFI_4_INFO %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'SHRUB_NFI_4_INFO',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "SHRUB_NFI_4_INFO"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+#### Regeneration tables ####
+REGENERATION_NFI_2 %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'REGENERATION_NFI_2',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "REGENERATION_NFI_2"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
+
 #### Variables Thesaurus ####
 # vars_table %>%
 readr::read_csv('data_raw/variables_thesaurus_modified.csv') %>%
