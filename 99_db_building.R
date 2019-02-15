@@ -961,6 +961,34 @@ pool::dbExecute(
   ADD PRIMARY KEY (plot_id, species_id);'
 )
 
+
+REGENERATION_NFI_3 %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'REGENERATION_NFI_3',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "REGENERATION_NFI_3"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
+
+REGENERATION_NFI_4 %>%
+  copy_to(
+    brand_new_nfi_db, df = ., name = 'REGENERATION_NFI_4',
+    overwrite = TRUE, temporary = FALSE,
+    indexes = list(
+      c('plot_id', 'species_id')
+    )
+  )
+pool::dbExecute(
+  brand_new_nfi_db,
+  'ALTER TABLE "REGENERATION_NFI_4"
+  ADD PRIMARY KEY (plot_id, species_id);'
+)
 #### Variables Thesaurus ####
 # vars_table %>%
 readr::read_csv('data_raw/variables_thesaurus_modified.csv') %>%
