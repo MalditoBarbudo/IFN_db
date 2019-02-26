@@ -16,7 +16,7 @@ plot_id_nfi_4 <- PLOTS %>%
   select(plot_id, old_idparcela, old_idclasse_nfi4)
 
 ## Results at plot level for each nfi level
-tbl(oracle_db, 'r_parcela_ifn2') %>%
+tbl(oracle_db, 'r_ifn2_creaf') %>%
   collect() %>%
   left_join(plot_id_nfi_2, by = c('idparcela' = 'old_idparcela')) %>%
   select(
@@ -56,7 +56,7 @@ tbl(oracle_db, 'r_parcela_ifn2') %>%
     under_bark_volume_dead = vscmorts
   ) -> PLOT_NFI_2_RESULTS
 
-tbl(oracle_db, 'r_parcela_ifn3') %>%
+tbl(oracle_db, 'r_ifn3_creaf') %>%
   collect() %>%
   # there is a problem with plot 251955 as it is classified as A1 but there is no record
   # for it in the NFI2. So we will transform it class to NN
