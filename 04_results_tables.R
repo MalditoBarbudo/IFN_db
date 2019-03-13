@@ -441,6 +441,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>%
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -450,7 +451,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
+  # ungroup() %>% 
   select(
     plot_id, #everything()
     simpspecies_id = idespeciesimp,
@@ -637,6 +638,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -646,7 +648,6 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything()
     genus_id = idgenere,
@@ -804,6 +805,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -813,7 +815,6 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything()
     bc_id = idplanifconif,
@@ -971,6 +972,7 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -980,7 +982,6 @@ tbl(access4_db,'ResultatEspecie_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything()
     dec_id = idcadesccon,
@@ -1347,6 +1348,7 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -1355,7 +1357,6 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything(),
     diamclass_id = idcd,
@@ -1485,6 +1486,7 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -1493,7 +1495,6 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything(),
     diamclass_id = idcd,
@@ -1623,6 +1624,7 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -1631,7 +1633,6 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything(),
     diamclass_id = idcd,
@@ -1761,6 +1762,7 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
     everything()
   ) %>%
   collect() %>%
+  ungroup() %>% 
   {magrittr::set_names(., tolower(names(.)))} %>%
   rename(
     idclasse = idclasseifn4,
@@ -1769,7 +1771,6 @@ tbl(access4_db,'ResultatEspecieCD_IFN4_CREAF_OLAP') %>%
   left_join(
     plot_id_nfi_4, by = c('idparcela' = 'old_idparcela', 'idclasse' = 'old_idclasse_nfi4')
   ) %>%
-  ungroup() %>% 
   select(
     plot_id, #everything(),
     diamclass_id = idcd,
