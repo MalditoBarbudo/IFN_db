@@ -31,19 +31,19 @@ tbl(oracle_db, 'r_ifn2_creaf') %>%
     density_dead = densitatmorts,
     basal_area_species_dominant = especieab,
     density_species_dominant = especiedens,
-    basal_area_simp_species_dominant = especiesimpleab,
-    density_simp_species_dominant = especiesimpledens,
+    basal_area_simpspecies_dominant = especiesimpleab,
+    density_simpspecies_dominant = especiesimpledens,
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
     #over_bark_volume_increment = iavc,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
-    basal_area_simp_species_percentage = percabespeciesimple,
+    basal_area_simpspecies_percentage = percabespeciesimple,
     basal_area_genus_percentage = percabgenere,
     basal_area_bc_percentage = percabplanifconif,
     density_dec_percentage = percdenscaducesclerconif,
     density_species_percentage = percdensespecie,
-    density_simp_species_percentage = percdensespeciesimple,
+    density_simpspecies_percentage = percdensespeciesimple,
     density_genus_percentage = percdensgenere,
     density_bc_percentage = percdensplanifconif,
     basal_area_bc_dominant = planifconifab,
@@ -92,8 +92,8 @@ tbl(oracle_db, 'r_ifn3_creaf') %>%
     density_dead = densitatmorts,
     basal_area_species_dominant = especieab,
     density_species_dominant = especiedens,
-    basal_area_simp_species_dominant = especiesimpleab,
-    density_simp_species_dominant = especiesimpledens,
+    basal_area_simpspecies_dominant = especiesimpleab,
+    density_simpspecies_dominant = especiesimpledens,
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
     lai = iaf,
@@ -101,12 +101,12 @@ tbl(oracle_db, 'r_ifn3_creaf') %>%
     #over_bark_volume_increment_creaf = iavc_creaf,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
-    basal_area_simp_species_percentage = percabespeciesimple,
+    basal_area_simpspecies_percentage = percabespeciesimple,
     basal_area_genus_percentage = percabgenere,
     basal_area_bc_percentage = percabplanifconif,
     density_dec_percentage = percdenscaducesclerconif,
     density_species_percentage = percdensespecie,
-    density_simp_species_percentage = percdensespeciesimple,
+    density_simpspecies_percentage = percdensespeciesimple,
     density_genus_percentage = percdensgenere,
     density_bc_percentage = percdensplanifconif,
     # gross_leaf_production = ph,
@@ -154,8 +154,8 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     density_dead = densitatmorts,
     basal_area_species_dominant = especieab,
     density_species_dominant = especiedens,
-    # basal_area_simp_species_dominant = especiesimpleab,
-    # density_simp_species_dominant = especiesimpledens,
+    # basal_area_simpspecies_dominant = especiesimpleab,
+    # density_simpspecies_dominant = especiesimpledens,
     basal_area_genus_dominant = genereab,
     density_genus_dominant = generedens,
     lai = iaf,
@@ -163,12 +163,12 @@ tbl(access4_db, 'Resultat_IFN4_CREAF_OLAP') %>%
     # #over_bark_volume_increment_creaf = iavc_creaf,
     basal_area_dec_percentage = percabcaducesclerconif,
     basal_area_species_percentage = percabespecie,
-    # basal_area_simp_species_percentage = percabespeciesimple,
+    # basal_area_simpspecies_percentage = percabespeciesimple,
     basal_area_genus_percentage = percabgenere,
     basal_area_bc_percentage = percabplanifconif,
     density_dec_percentage = percdensitatcaducesclerconif,
     density_species_percentage = percdensitatespecie,
-    # density_simp_species_percentage = percdensitatespeciesimple,
+    # density_simpspecies_percentage = percdensitatespeciesimple,
     density_genus_percentage = percdensitatgenere,
     density_bc_percentage = percdensitatplanifconif,
     # gross_leaf_production = ph,
@@ -498,8 +498,8 @@ plot_nfi_4_results_temp %>%
       slice(which.max(basal_area_percentage)) %>%
       select(
         plot_id,
-        basal_area_simp_species_dominant = simpspecies_id,
-        basal_area_simp_species_percentage = basal_area_percentage
+        basal_area_simpspecies_dominant = simpspecies_id,
+        basal_area_simpspecies_percentage = basal_area_percentage
       ),
     by = 'plot_id'
   ) %>%
@@ -510,8 +510,8 @@ plot_nfi_4_results_temp %>%
       slice(which.max(density_percentage)) %>%
       select(
         plot_id,
-        density_simp_species_dominant = simpspecies_id,
-        density_simp_species_percentage = density_percentage
+        density_simpspecies_dominant = simpspecies_id,
+        density_simpspecies_percentage = density_percentage
       ),
     by = 'plot_id'
   ) -> PLOT_NFI_4_RESULTS
