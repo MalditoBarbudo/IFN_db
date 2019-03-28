@@ -18,6 +18,26 @@ tbl(oracle_db, 'r_ifn3_ifn2_creaf') %>%
     density_dead = densitat_m,
     density_balance = densitat_balanç,
     density_growth = densitat_creixement,
+    density_dec_dominant_nfi2 = caducesclerconifdens_ifn2,
+    density_dec_dominant_nfi3 = caducesclerconifdens_ifn3,
+    density_bc_dominant_nfi2 = planifconifdens_ifn2,
+    density_bc_dominant_nfi3 = planifconifdens_ifn3,
+    density_genus_dominant_nfi2 = generedens_ifn2,
+    density_genus_dominant_nfi3 = generedens_ifn3,
+    density_species_dominant_nfi2 = especiedens_ifn2,
+    density_species_dominant_nfi3 = especiedens_ifn3,
+    density_simpspecies_dominant_nfi2 = especiesimpledens_ifn2,
+    density_simpspecies_dominant_nfi3 = especiesimpledens_ifn3,
+    basal_area_dec_dominant_nfi2 = caducesclerconifab_ifn2,
+    basal_area_dec_dominant_nfi3 = caducesclerconifab_ifn3,
+    basal_area_bc_dominant_nfi2 = planifconifab_ifn2,
+    basal_area_bc_dominant_nfi3 = planifconifab_ifn3,
+    basal_area_genus_dominant_nfi2 = genereab_ifn2,
+    basal_area_genus_dominant_nfi3 = genereab_ifn3,
+    basal_area_species_dominant_nfi2 = especieab_ifn2,
+    basal_area_species_dominant_nfi3 = especieab_ifn3,
+    basal_area_simpspecies_dominant_nfi2 = especiesimpleab_ifn2,
+    basal_area_simpspecies_dominant_nfi3 = especiesimpleab_ifn3,
     basal_area_rem = ab_d,
     basal_area_inc = ab_i,
     basal_area_dead = ab_m,
@@ -83,6 +103,28 @@ tbl(access4_db, 'Resultat_IFN4_IFN3_CREAF_OLAP') %>%
     density_har = densitat_a,
     density_balance = densitat_balanç,
     density_growth = densitat_creixement,
+    
+    density_dec_dominant_nfi4 = caducesclerconifdens_ifn4,
+    density_dec_dominant_nfi3 = caducesclerconifdens_ifn3,
+    density_bc_dominant_nfi4 = planifconifdens_ifn4,
+    density_bc_dominant_nfi3 = planifconifdens_ifn3,
+    density_genus_dominant_nfi4 = generedens_ifn4,
+    density_genus_dominant_nfi3 = generedens_ifn3,
+    density_species_dominant_nfi4 = especiedens_ifn4,
+    density_species_dominant_nfi3 = especiedens_ifn3,
+    # density_simpspecies_dominant_nfi4 = especiesimpledens_ifn4,
+    # density_simpspecies_dominant_nfi3 = especiesimpledens_ifn3,
+    basal_area_dec_dominant_nfi4 = caducesclerconifab_ifn4,
+    basal_area_dec_dominant_nfi3 = caducesclerconifab_ifn3,
+    basal_area_bc_dominant_nfi4 = planifconifab_ifn4,
+    basal_area_bc_dominant_nfi3 = planifconifab_ifn3,
+    basal_area_genus_dominant_nfi4 = genereab_ifn4,
+    basal_area_genus_dominant_nfi3 = genereab_ifn3,
+    basal_area_species_dominant_nfi4 = especieab_ifn4,
+    basal_area_species_dominant_nfi3 = especieab_ifn3,
+    # basal_area_simpspecies_dominant_nfi4 = especiesimpleab_ifn4,
+    # basal_area_simpspecies_dominant_nfi3 = especiesimpleab_ifn3,
+    
     basal_area_diss = ab_d,
     basal_area_inc = ab_i,
     basal_area_dead = ab_m,
@@ -124,6 +166,15 @@ tbl(access4_db, 'Resultat_IFN4_IFN3_CREAF_OLAP') %>%
   left_join(
     PLOTS_NFI_4_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
     suffix = c('_nfi3', '_nfi4')
+  ) %>%
+  # lets join the simpspecies dominant info from the plots tables
+  left_join(
+    PLOT_NFI_3_RESULTS %>% select(plot_id, density_simpspecies_dominant, basal_area_simpspecies_dominant),
+    by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOT_NFI_4_RESULTS %>% select(plot_id, density_simpspecies_dominant, basal_area_simpspecies_dominant),
+    by = 'plot_id', suffix = c('_nfi3', '_nfi4')
   ) %>%
   mutate(
     years_diff = feat_sampling_year_nfi4 - feat_sampling_year_nfi3,
@@ -203,6 +254,15 @@ tbl(oracle_db, 'r_cd_ifn3_ifn2_creaf') %>%
     PLOTS_NFI_3_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
     suffix = c('_nfi2', '_nfi3')
   ) %>%
+  # lets join the simpspecies dominant info from the plots tables
+  left_join(
+    PLOT_NFI_2_RESULTS %>% select(plot_id, contains('dominant')),
+    by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOT_NFI_3_RESULTS %>% select(plot_id, contains('dominant')),
+    by = 'plot_id', suffix = c('_nfi2', '_nfi3')
+  ) %>%
   mutate(
     years_diff = feat_sampling_year_nfi3 - feat_sampling_year_nfi2,
     density_rem = density_rem / years_diff,
@@ -274,6 +334,15 @@ tbl(access4_db, 'ResultatCD_IFN4_IFN3_CREAF_OLAP') %>%
   left_join(
     PLOTS_NFI_4_DYNAMIC_INFO %>% select(plot_id, feat_sampling_year), by = 'plot_id',
     suffix = c('_nfi3', '_nfi4')
+  ) %>%
+  # lets join the simpspecies dominant info from the plots tables
+  left_join(
+    PLOT_NFI_3_RESULTS %>% select(plot_id, contains('dominant')),
+    by = 'plot_id'
+  ) %>%
+  left_join(
+    PLOT_NFI_4_RESULTS %>% select(plot_id, contains('dominant')),
+    by = 'plot_id', suffix = c('_nfi3', '_nfi4')
   ) %>%
   mutate(
     years_diff = feat_sampling_year_nfi4 - feat_sampling_year_nfi3,
