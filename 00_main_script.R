@@ -32,7 +32,7 @@ access4_db <- dbPool(
 
 brand_new_nfi_db <- pool::dbPool(
   RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
+  user = 'ifn', host = '158.109.46.23',
   password = rstudioapi::askForPassword('Password for ifn'),
   dbname = 'tururu'
 )
