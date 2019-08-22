@@ -20,21 +20,25 @@ oracle_db <- dbPool(
   RPostgreSQL::PostgreSQL(),
   user = 'ifn',
   password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'oracle_ifn'
+  dbname = 'oracle_ifn',
+  host = '158.109.46.23',
+  port = 5433
 )
 
 access4_db <- dbPool(
   RPostgreSQL::PostgreSQL(),
   user = 'ifn',
   password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'ifn4_access'
+  dbname = 'ifn4_access',
+  host = '158.109.46.23',
+  port = 5433
 )
 
 brand_new_nfi_db <- pool::dbPool(
   RPostgreSQL::PostgreSQL(),
   user = 'ifn', host = '158.109.46.23',
   password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'tururu'
+  dbname = 'tururu', port = 5433
 )
 
 #### plots data ####
