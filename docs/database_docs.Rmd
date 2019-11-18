@@ -1,0 +1,814 @@
+---
+title: "Untitled"
+author: "Víctor Granda"
+date: "21/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## BC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `bc_id`
+    
+## BC_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `bc_id`
+
+## BC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `bc_id`
+    
+## BC_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `bc_id`
+
+## BC_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `bc_id`
+    
+## BC_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `bc_id`
+    
+## BC_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `bc_id`
+    
+## BC_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `bc_id`
+
+## BC_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `bc_id`
+    
+## BC_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Broadleaf* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `bc_id`
+
+## DEC_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `dec_id`
+    
+## DEC_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `dec_id`
+
+## DEC_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `dec_id`
+    
+## DEC_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `dec_id`
+
+## DEC_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `dec_id`
+    
+## DEC_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `dec_id`
+    
+## DEC_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `dec_id`
+    
+## DEC_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `dec_id`
+
+## DEC_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `dec_id`
+    
+## DEC_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - *Decidious* y *Esclerophyll* y *Conifer*
+
++ ID vars:
+    - `plot_id`
+    - `dec_id`
+
+## GENUS_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Género
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `genus_id`
+    
+## GENUS_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Género
+
++ ID vars:
+    - `plot_id`
+    - `genus_id`
+
+## GENUS_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Género
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `genus_id`
+    
+## GENUS_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Género
+
++ ID vars:
+    - `plot_id`
+    - `genus_id`
+
+## GENUS_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Género
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `genus_id`
+    
+## GENUS_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Género
+
++ ID vars:
+    - `plot_id`
+    - `genus_id`
+    
+## GENUS_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Género
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `genus_id`
+    
+## GENUS_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Género
+
++ ID vars:
+    - `plot_id`
+    - `genus_id`
+
+## GENUS_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Género
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `genus_id`
+    
+## GENUS_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Género
+
++ ID vars:
+    - `plot_id`
+    - `genus_id`
+
+## PLOT_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    
+## PLOT_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOT_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    
+## PLOT_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOT_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    
+## PLOT_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+    
+## PLOT_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    
+## PLOT_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOT_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    
+## PLOT_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOTS
+
++ Información estática de las parcelas
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOTS_NFI_2_DYNAMIC_INFO
+
++ Información dinámica de las parecelas correspondiente al IFN2
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOTS_NFI_3_DYNAMIC_INFO
+
++ Información dinámica de las parecelas correspondiente al IFN3
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## PLOTS_NFI_4_DYNAMIC_INFO
+
+ Información dinámica de las parecelas correspondiente al IFN4
+
++ Sin desglose
+
++ ID vars:
+    - `plot_id`
+
+## REGENERATION_NFI_2
+
++ Información de regeneración (árboles menores de 7.5cm) a nivel de parcela para el IFN2
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## REGENERATION_NFI_3
+
++ Información de regeneración (árboles menores de 7.5cm) a nivel de parcela para el IFN3
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## REGENERATION_NFI_4
+
++ Información de regeneración (árboles menores de 7.5cm) a nivel de parcela para el IFN4
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SHRUB_NFI_2_INFO
+
++ Información de arbustos a nivel de parcela para el IFN2
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SHRUB_NFI_3_INFO
+
++ Información de arbustos a nivel de parcela para el IFN3
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SHRUB_NFI_4_INFO
+
++ Información de arbustos a nivel de parcela para el IFN4
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SIMPSPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+
++ ID vars:
+    - `plot_id`
+    - `simpspecies_id`
+
+## SIMPSPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+
++ ID vars:
+    - `plot_id`
+    - `simpspecies_id`
+
+## SIMPSPECIES_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+
++ ID vars:
+    - `plot_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+
++ ID vars:
+    - `plot_id`
+    - `simpspecies_id`
+
+## SIMPSPECIES_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `simpspecies_id`
+    
+## SIMPSPECIES_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies (simplificado)
+
++ ID vars:
+    - `plot_id`
+    - `simpspecies_id`
+
+## SPECIES_COMP_NFI2_NFI3_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `species_id`
+    
+## SPECIES_COMP_NFI2_NFI3_RESULTS
+
++ Resultados comparación IFN2-IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SPECIES_COMP_NFI3_NFI4_DIAMCLASS_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `species_id`
+    
+## SPECIES_COMP_NFI3_NFI4_RESULTS
+
++ Resultados comparación IFN3-IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SPECIES_NFI_2_DIAMCLASS_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `species_id`
+    
+## SPECIES_NFI_2_RESULTS
+
++ Resultados IFN2 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+    
+## SPECIES_NFI_3_DIAMCLASS_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `species_id`
+    
+## SPECIES_NFI_3_RESULTS
+
++ Resultados IFN3 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+## SPECIES_NFI_4_DIAMCLASS_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+    - Clases diamétricas
+
++ ID vars:
+    - `plot_id`
+    - `diamclass_id`
+    - `species_id`
+    
+## SPECIES_NFI_4_RESULTS
+
++ Resultados IFN4 a nivel de parcela
+
++ Desglosado por:
+    - Especies
+
++ ID vars:
+    - `plot_id`
+    - `species_id`
+
+
