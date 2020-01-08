@@ -1036,6 +1036,7 @@ pool::dbExecute(
 
 # numerical_variables %>%
 readr::read_csv('data_raw/numerical_variables.csv') %>%
+  dplyr::mutate(var_table = tolower(var_table)) %>%
   copy_to(
     brand_new_nfi_db, df = ., name = tolower('VARIABLES_NUMERICAL'),
     overwrite = TRUE, temporary = FALSE,
