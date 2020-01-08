@@ -114,7 +114,10 @@ categorical_variables <- tables_names %>%
   # no easy manage of arrays exists yet between postgres and r so, let's unnest and create
   # a key, that in combination with var_id is unique
   unnest() %>%
-  mutate(dummy_id = 1:nrow(.)) %>%
+  mutate(
+    dummy_id = 1:nrow(.),
+    var_table = tolower(var_table)
+  ) %>%
   select(dummy_id, var_id, var_table, var_values)
 
 ## numerical
@@ -156,7 +159,8 @@ numerical_variables <- tables_names %>%
   purrr::map(numerical_values) %>%
   bind_rows() %>%
   right_join(numerical_variables, by = c('var_id', 'var_table')) %>%
-  select(var_id, var_table, everything())
+  select(var_id, var_table, everything()) %>%
+  mutate(var_table = tolower(var_table))
 
 writexl::write_xlsx(numerical_variables, 'data_raw/numerical_variables.xlsx')
 
@@ -168,5 +172,6 @@ logical_variables <- vars_table %>%
 # dates
 dttm_variables <- vars_table %>%
   filter(var_type == 'POSIXct') %>%
-  select(var_id, var_table)
+  select(var_id, var_table) %>%
+  mutate(var_table = tolower(var_table))
 

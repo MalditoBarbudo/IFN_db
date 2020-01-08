@@ -992,6 +992,7 @@ pool::dbExecute(
 #### Variables Thesaurus ####
 # vars_table %>%
 readr::read_csv('data_raw/variables_thesaurus_modified.csv') %>%
+  dplyr::mutate(var_table = tolower(var_table)) %>%
   copy_to(
     brand_new_nfi_db, df = ., name = tolower('VARIABLES_THESAURUS'),
     overwrite = TRUE, temporary = FALSE,
