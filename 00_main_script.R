@@ -18,11 +18,11 @@ library(glue)
 # db connections
 oracle_db <- dbPool(
   RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
+  user = 'guest',
   password = rstudioapi::askForPassword('Password for ifn'),
   dbname = 'oracle_ifn',
-  host = '158.109.46.23',
-  port = 5433
+  host = 'laboratoriforestal.creaf.cat',
+  port = 5432
 )
 
 access4_db <- dbPool(
@@ -30,13 +30,13 @@ access4_db <- dbPool(
   user = 'ifn',
   password = rstudioapi::askForPassword('Password for ifn'),
   dbname = 'ifn4_access',
-  host = '158.109.46.23',
-  port = 5433
+  host = 'laboratoriforestal.creaf.cat',
+  port = 5432
 )
 
 brand_new_nfi_db <- pool::dbPool(
   RPostgreSQL::PostgreSQL(),
-  user = 'ifn', host = '158.109.46.23',
+  user = 'ifn', host = 'laboratoriforestal.creaf.cat',
   password = rstudioapi::askForPassword('Password for ifn'),
   dbname = 'tururu', port = 5432
 )
