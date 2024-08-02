@@ -1,7 +1,7 @@
 # dump the data base
 "pg_dump -U ifn tururu > tururu_dump.sql"
 # scp the database
-"scp tururu_dump.sql vgranda@158.109.46.23:~/"
+"scp tururu_dump.sql ****@****:~/"
 
 # go to the server and drop the database
 "DROP DATABASE tururu;"

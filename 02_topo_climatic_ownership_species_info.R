@@ -577,15 +577,26 @@ topo_clim_info <- bind_rows(
 ## an over to the belonging of the plots to the variables present in the shapefile.
 ## This, we do it with all the plots, as the maps are the most recent ones
 
+sf::st_read('data_raw/ownership_layer', layer = "Forests") %>%
+  sf::st_transform(4326)
+
+# ifn2_ifn3_ifn4_plots %>%
+#   select(longitude, latitude) %>%
+#   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+#   sp::over(
+#     {
+#       rgdal::readOGR('data_raw/ownership_layer', 'Forests',
+#                      GDAL1_integer64_policy = FALSE) %>%
+#         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+#     }
+#   ) %>%
 ifn2_ifn3_ifn4_plots %>%
-  select(longitude, latitude) %>% 
-  sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-  sp::over(
-    {
-      rgdal::readOGR('data_raw/ownership_layer', 'Forests',
-                     GDAL1_integer64_policy = FALSE) %>%
-        sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-    }
+  select(longitude, latitude) %>%
+  sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+  sf::st_join(
+    sf::st_read('data_raw/ownership_layer', layer = "Forests") %>%
+      sf::st_transform(4326) |>
+      sf::st_make_valid()
   ) %>%
   {magrittr::set_names(., tolower(names(.)))} %>%
   as_tibble() %>%
@@ -641,114 +652,180 @@ ifn2_ifn3_ifn4_plots %>%
 ## We also need the updated administrative divisions info. For that, again we load the
 ## shapefiles from the administrative divs and use sp::over
 
+# ifn2_ifn3_ifn4_plots %>%
+#   select(longitude, latitude) %>% 
+#   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+#   sp::over(
+#     {
+#       rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpm1_20180101_0',
+#                      GDAL1_integer64_policy = FALSE) %>%
+#         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+#     }
+#   ) %>%
 ifn2_ifn3_ifn4_plots %>%
-  select(longitude, latitude) %>% 
-  sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-  sp::over(
-    {
-      rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpm1_20180101_0',
-                     GDAL1_integer64_policy = FALSE) %>%
-        sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-    }
+  select(longitude, latitude) %>%
+  sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+  sf::st_join(
+    sf::st_read('data_raw/shapefiles', layer = "bm5mv20sh0tpm1_20180101_0") %>%
+      sf::st_transform(4326) |>
+      sf::st_make_valid()
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpc1_20180101_0',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   )
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpc1_20180101_0',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "bm5mv20sh0tpc1_20180101_0") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         )
     }
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpv1_20180101_0',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   )
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpv1_20180101_0',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "bm5mv20sh0tpv1_20180101_0") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         )
     }
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpp1_20180101_0',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   )
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'bm5mv20sh0tpp1_20180101_0',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "bm5mv20sh0tpp1_20180101_0") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         )
     }
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   )
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'delegacions2018',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "delegacions2018") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         )
     }
   ) %>% 
   ## Add the enpes, pein and xn2000 belongings
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'enpe_2017',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   ) %>% 
+      #   select(nom_enpe = nom)
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'enpe_2017',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "enpe_2017") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         ) %>% 
         select(nom_enpe = nom)
     }
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'pein_2017',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   ) %>% 
+
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'pein_2017',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "pein_2017") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         ) %>% 
         select(nom_pein = nom)
     }
   ) %>%
   bind_cols(
     {
+      # ifn2_ifn3_ifn4_plots %>%
+      #   select(longitude, latitude) %>% 
+      #   sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
+      #   sp::over(
+      #     {
+      #       rgdal::readOGR('data_raw/shapefiles', 'xn2000_2017',
+      #                      GDAL1_integer64_policy = FALSE) %>%
+      #         sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
+      #     }
+      #   ) %>% 
       ifn2_ifn3_ifn4_plots %>%
-        select(longitude, latitude) %>% 
-        sp::SpatialPoints(sp::CRS("+proj=longlat +datum=WGS84")) %>%
-        sp::over(
-          {
-            rgdal::readOGR('data_raw/shapefiles', 'xn2000_2017',
-                           GDAL1_integer64_policy = FALSE) %>%
-              sp::spTransform(sp::CRS("+proj=longlat +datum=WGS84"))
-          }
+        select(longitude, latitude) %>%
+        sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
+        sf::st_join(
+          sf::st_read('data_raw/shapefiles', layer = "xn2000_2017") %>%
+            sf::st_transform(4326) |>
+            sf::st_make_valid()
         ) %>% 
         select(nom_xn2000 = nom_n2)
     }
@@ -768,8 +845,8 @@ ifn2_ifn3_ifn4_plots %>%
     admin_region = NOMCOMAR,
     admin_vegueria = NOMVEGUE,
     admin_municipality = NOMMUNI,
-    admin_province_id = CODIPROV,
-    admin_region_id = CODICOMAR,
+    admin_province_id = CODIPROV...7,
+    admin_region_id = CODICOMAR...6,
     admin_municipality_id = CODIMUNI,
     admin_natural_interest_area = nom_enpe,
     admin_special_protection_natural_area = nom_pein,

@@ -6,39 +6,39 @@
 #### Libraries and data access ####
 library(tidyverse)
 library(dbplyr)
-library(RPostgreSQL)
+library(RPostgres)
 library(pool)
 library(magrittr)
 library(sp)
-library(rgdal)
+# library(rgdal)
 library(stringr)
 library(glue)
 # library(tidyIFN)
 
 # db connections
 oracle_db <- dbPool(
-  RPostgreSQL::PostgreSQL(),
-  user = 'guest',
-  password = rstudioapi::askForPassword('Password for ifn'),
+  RPostgres::Postgres(),
+  user = Sys.getenv("DB_ADMIN"),
+  password = Sys.getenv("DB_PASS"),
   dbname = 'oracle_ifn',
-  host = 'laboratoriforestal.creaf.cat',
-  port = 5432
+  host = Sys.getenv("DB_HOST"),
+  port = as.numeric(Sys.getenv("DB_PORT"))
 )
 
 access4_db <- dbPool(
-  RPostgreSQL::PostgreSQL(),
-  user = 'ifn',
-  password = rstudioapi::askForPassword('Password for ifn'),
+  RPostgres::Postgres(),
+  user = Sys.getenv("DB_ADMIN"),
+  password = Sys.getenv("DB_PASS"),
   dbname = 'ifn4_access',
-  host = 'laboratoriforestal.creaf.cat',
-  port = 5432
+  host = Sys.getenv("DB_HOST"),
+  port = as.numeric(Sys.getenv("DB_PORT"))
 )
 
 brand_new_nfi_db <- pool::dbPool(
-  RPostgreSQL::PostgreSQL(),
-  user = 'ifn', host = 'laboratoriforestal.creaf.cat',
-  password = rstudioapi::askForPassword('Password for ifn'),
-  dbname = 'tururu', port = 5432
+  RPostgres::Postgres(),
+  user = Sys.getenv("DB_ADMIN"), host = Sys.getenv("DB_HOST"),
+  password = Sys.getenv("DB_PASS"),
+  dbname = 'tururu', port = as.numeric(Sys.getenv("DB_PORT"))
 )
 
 #### plots data ####
